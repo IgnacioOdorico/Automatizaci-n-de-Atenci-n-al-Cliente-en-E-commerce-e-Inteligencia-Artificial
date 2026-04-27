@@ -6,7 +6,7 @@
 
 <br/>
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=2DD4BF&center=true&vCenter=true&multiline=true&repeat=true&width=700&height=80&lines=🤖+Sistema+de+Automatización+Post-Venta+con+IA;📦+Procesamiento+de+Órdenes+en+Milisegundos;💬+Chatbot+Omnicanal+24%2F7+con+GPT-4o-mini;📊+Métricas+en+Tiempo+Real+con+Grafana)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=2DD4BF&center=true&vCenter=true&multiline=true&repeat=true&width=700&height=140&lines=🤖+Sistema+de+Automatización+Post-Venta+con+IA;📦+Procesamiento+de+Órdenes+en+Milisegundos;💬+Chatbot+Omnicanal+24%2F7+con+GPT-4o-mini;📊+Métricas+en+Tiempo+Real+con+Grafana)](https://git.io/typing-svg)
 
 <br/>
 
