@@ -55,6 +55,7 @@ services:
       # Timezone Argentina
       - GENERIC_TIMEZONE=America/Argentina/Mendoza
       - TZ=America/Argentina/Mendoza
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:?definir en .env}
     volumes:
       - n8n_data:/home/node/.n8n
     depends_on:
@@ -75,14 +76,17 @@ services:
     container_name: tesis_postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      # Host 5433 -> contenedor 5432. Se usa 5433 en el host para NO chocar con
+      # un PostgreSQL nativo de Windows que ya ocupa el 5432. n8n y Grafana usan
+      # la red interna (host "postgres", puerto 5432), no se ven afectados.
+      - "5433:5432"
     environment:
       POSTGRES_DB: ecommerce_tesis
       POSTGRES_USER: n8n_user
       POSTGRES_PASSWORD: n8n_pass
     volumes:
       - pg_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/01_init.sql
+      - ./init_simple.sql:/docker-entrypoint-initdb.d/01_init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U n8n_user -d ecommerce_tesis"]
       interval: 10s

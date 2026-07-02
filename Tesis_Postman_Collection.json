@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "Tesis Post-Venta n8n — Demo",
+    "description": "Requests de prueba para la defensa. Flujo 1 (órdenes) y Flujo 2 (chatbot). El chatbot usa payload PLANO (message/from/name). Para la demo en vivo con canvas animado usá los del grupo 'TEST'; para pruebas rápidas con el workflow activo, los de 'PRODUCCION'.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "host", "value": "http://localhost:5678" }
+  ],
+  "item": [
+    {
+      "name": "Flujo 1 — Ordenes",
+      "item": [
+        {
+          "name": "Orden CON stock (PROD-002)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{host}}/webhook/orden-nueva", "host": [ "{{host}}" ], "path": [ "webhook", "orden-nueva" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"order_number\": \"ORD-DEMO-01\",\n  \"customer_name\": \"Cliente Demo\",\n  \"customer_email\": \"demo@cliente.com\",\n  \"customer_phone\": \"5492611234567\",\n  \"product_sku\": \"PROD-002\",\n  \"quantity\": 1\n}", "options": { "raw": { "language": "json" } } },
+            "description": "Rama CON stock: registra, descuenta, confirma y manda email de confirmacion. OJO: order_number es UNICO — si lo mandas de nuevo, cambia el numero (ORD-DEMO-01b, etc.)."
+          }
+        },
+        {
+          "name": "Orden SIN stock (PROD-001 x9999)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{host}}/webhook/orden-nueva", "host": [ "{{host}}" ], "path": [ "webhook", "orden-nueva" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"order_number\": \"ORD-DEMO-02\",\n  \"customer_name\": \"Cliente Demo\",\n  \"customer_email\": \"demo@cliente.com\",\n  \"customer_phone\": \"5492611234567\",\n  \"product_sku\": \"PROD-001\",\n  \"quantity\": 9999\n}", "options": { "raw": { "language": "json" } } },
+            "description": "Rama SIN stock: pide mas unidades de las que hay -> status no_stock + email de aviso."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flujo 2 — Chatbot (TEST, para demo con canvas en vivo)",
+      "description": "Antes de cada envio: en n8n cli en 'Execute workflow' (Listen). Estos pegan al webhook-test y sirven para UN envio cada vez.",
+      "item": [
+        {
+          "name": "FAQ — medios de pago",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{host}}/webhook-test/whatsapp", "host": [ "{{host}}" ], "path": [ "webhook-test", "whatsapp" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"message\": \"Cuales son los medios de pago que aceptan?\",\n  \"from\": \"5492611234567\",\n  \"name\": \"Cliente Demo\"\n}", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        {
+          "name": "ESTADO_PEDIDO — integracion con Flujo 1",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{host}}/webhook-test/whatsapp", "host": [ "{{host}}" ], "path": [ "webhook-test", "whatsapp" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"message\": \"Hola, queria saber el estado de mi pedido ORD-DEMO-01\",\n  \"from\": \"5492611234567\",\n  \"name\": \"Cliente Demo\"\n}", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        {
+          "name": "RECLAMO — crea ticket",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{host}}/webhook-test/whatsapp", "host": [ "{{host}}" ], "path": [ "webhook-test", "whatsapp" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"message\": \"Compre un producto y llego roto, quiero hacer un reclamo\",\n  \"from\": \"5492611234567\",\n  \"name\": \"Cliente Demo\"\n}", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        {
+          "name": "GENERAL — consulta abierta",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{host}}/webhook-test/whatsapp", "host": [ "{{host}}" ], "path": [ "webhook-test", "whatsapp" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"message\": \"Tienen tiendas fisicas para visitar?\",\n  \"from\": \"5492611234567\",\n  \"name\": \"Cliente Demo\"\n}", "options": { "raw": { "language": "json" } } }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flujo 2 — Chatbot (PRODUCCION, pruebas rapidas)",
+      "description": "Con el workflow ACTIVO. Pegan al webhook de produccion, funcionan sin tener que apretar 'Execute'. NO animan el canvas (las ejecuciones quedan en la lista Executions).",
+      "item": [
+        {
+          "name": "FAQ — medios de pago",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{host}}/webhook/whatsapp", "host": [ "{{host}}" ], "path": [ "webhook", "whatsapp" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"message\": \"Cuales son los medios de pago que aceptan?\",\n  \"from\": \"5492611234567\",\n  \"name\": \"Cliente Demo\"\n}", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        {
+          "name": "ESTADO_PEDIDO",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{host}}/webhook/whatsapp", "host": [ "{{host}}" ], "path": [ "webhook", "whatsapp" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"message\": \"Hola, queria saber el estado de mi pedido ORD-DEMO-01\",\n  \"from\": \"5492611234567\",\n  \"name\": \"Cliente Demo\"\n}", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        {
+          "name": "RECLAMO",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{host}}/webhook/whatsapp", "host": [ "{{host}}" ], "path": [ "webhook", "whatsapp" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"message\": \"Compre un producto y llego roto, quiero hacer un reclamo\",\n  \"from\": \"5492611234567\",\n  \"name\": \"Cliente Demo\"\n}", "options": { "raw": { "language": "json" } } }
+          }
+        },
+        {
+          "name": "GENERAL",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": { "raw": "{{host}}/webhook/whatsapp", "host": [ "{{host}}" ], "path": [ "webhook", "whatsapp" ] },
+            "body": { "mode": "raw", "raw": "{\n  \"message\": \"Tienen tiendas fisicas para visitar?\",\n  \"from\": \"5492611234567\",\n  \"name\": \"Cliente Demo\"\n}", "options": { "raw": { "language": "json" } } }
+          }
+        }
+      ]
+    }
+  ]
+}

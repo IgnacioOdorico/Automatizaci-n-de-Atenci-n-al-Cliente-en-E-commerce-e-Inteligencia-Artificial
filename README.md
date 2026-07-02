@@ -1,144 +1,65 @@
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,50:1a7f5a,100:2dd4bf&height=220&section=header&text=🛒%20Pipeline%20Post-Venta%20IA&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Automatización%20completa%20del%20ciclo%20post-venta%20en%20E-commerce&descSize=16&descColor=a3e4d7&descAlignY=55"/>
+# 🛒 Pipeline de Automatización del Ciclo Post-Venta en E-commerce con IA
 
-<div align="center">
+**Trabajo Final de Grado — UTN FRM 2026**  
+**Autores:** Santiago Sordi, Ignacio Odorico, Juan Cruz Ana  
+**Tutor:** Prof. Alberto Cortez
 
-<img src="docs/imagenes/robot_heart.png" width="180" alt="Bot Mascota del Proyecto"/>
+---
 
-<br/>
+## 📌 ¿Qué es este proyecto?
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=2DD4BF&center=true&vCenter=true&multiline=true&repeat=true&width=700&height=140&lines=🤖+Sistema+de+Automatización+Post-Venta+con+IA;📦+Procesamiento+de+Órdenes+en+Milisegundos;💬+Chatbot+Omnicanal+24%2F7+con+GPT-4o-mini;📊+Métricas+en+Tiempo+Real+con+Grafana)](https://git.io/typing-svg)
+Sistema de automatización completo del ciclo post-venta para una PyME e-commerce argentino, implementado con **N8N** como orquestador central. El sistema reemplaza el 100% de las operaciones manuales post-venta mediante dos flujos que trabajan en paralelo:
 
-<br/>
+| Flujo | Nombre | Qué hace |
+|-------|--------|----------|
+| **Flujo 1** | Pipeline de Procesamiento de Órdenes | Recibe órdenes, verifica stock, confirma el pedido y notifica al cliente por email — en milisegundos, sin intervención humana |
+| **Flujo 2** | Chatbot Omnicanal con IA | Atiende consultas de clientes por WhatsApp, Telegram y Email 24/7 usando GPT-4o-mini |
 
-![N8N](https://img.shields.io/badge/N8N-Orquestador-EA4B71?style=for-the-badge&logo=n8n&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL_15-Base_de_Datos-336791?style=for-the-badge&logo=postgresql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Infraestructura-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![OpenAI](https://img.shields.io/badge/GPT--4o--mini-IA-412991?style=for-the-badge&logo=openai&logoColor=white)
-![Grafana](https://img.shields.io/badge/Grafana-Dashboards-F46800?style=for-the-badge&logo=grafana&logoColor=white)
-![WhatsApp](https://img.shields.io/badge/WhatsApp-Canal-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)
-![Telegram](https://img.shields.io/badge/Telegram-Canal-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)
-![Gmail](https://img.shields.io/badge/Gmail-Canal-EA4335?style=for-the-badge&logo=gmail&logoColor=white)
+---
 
-<br/>
-
-> **Trabajo Final de Grado — UTN FRM 2026**
-
-</div>
-
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
-
-## <img src="https://media.giphy.com/media/iY8CRBdQXODJSCERIr/giphy.gif" width="30"> ¿Qué es este proyecto?
-
-Sistema de automatización completo del ciclo post-venta para una **PyME e-commerce argentino**, implementado con **N8N** como orquestador central. El sistema reemplaza el **100% de las operaciones manuales** post-venta mediante dos flujos que trabajan en paralelo:
-
-<table>
-<tr>
-<td align="center"><b>⚡ Flujo</b></td>
-<td align="center"><b>📛 Nombre</b></td>
-<td align="center"><b>🎯 Qué hace</b></td>
-</tr>
-<tr>
-<td align="center"><b>Flujo 1</b></td>
-<td>🔄 Pipeline de Procesamiento de Órdenes</td>
-<td>Recibe órdenes, verifica stock, confirma el pedido y notifica al cliente por email — <b>en milisegundos</b>, sin intervención humana</td>
-</tr>
-<tr>
-<td align="center"><b>Flujo 2</b></td>
-<td>🤖 Chatbot Omnicanal con IA</td>
-<td>Atiende consultas de clientes por WhatsApp, Telegram y Email <b>24/7</b> usando GPT-4o-mini</td>
-</tr>
-</table>
-
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
-
-## <img src="https://media.giphy.com/media/QssGEmpkyEOhBCb7e1/giphy.gif" width="30"> Arquitectura
-
-<div align="center">
+## 🏗️ Arquitectura
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                     🐳 Docker Network                        │
-│                                                              │
-│   ┌──────────┐    ┌──────────────┐    ┌──────────────┐      │
-│   │   n8n    │───▶│  PostgreSQL  │◀───│   Grafana    │      │
-│   │  :5678   │    │    :5432     │    │    :3000     │      │
-│   │(Flujo 1) │    │ ecommerce_  │    │ (Dashboards) │      │
-│   │(Flujo 2) │    │   tesis     │    │              │      │
-│   └────┬─────┘    └──────────────┘    └──────────────┘      │
-│        │                                                     │
-│        ▼                                                     │
-│   ┌──────────┐                                               │
-│   │ Mailpit  │ ← Emails de confirmación (demo local)        │
-│   │  :8025   │                                               │
-│   └──────────┘                                               │
-└──────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                   Docker Network                        │
+│                                                         │
+│  ┌──────────┐    ┌──────────────┐    ┌──────────────┐  │
+│  │   n8n    │───▶│  PostgreSQL  │◀───│   Grafana    │  │
+│  │ :5678    │    │  :5432       │    │   :3000      │  │
+│  │(Flujo 1) │    │ecommerce_    │    │ (Dashboards) │  │
+│  │(Flujo 2) │    │tesis         │    │              │  │
+│  └────┬─────┘    └──────────────┘    └──────────────┘  │
+│       │                                                 │
+│       ▼                                                 │
+│  ┌──────────┐                                           │
+│  │ Mailpit  │ ← Emails de confirmación (demo local)     │
+│  │  :8025   │                                           │
+│  └──────────┘                                           │
+└─────────────────────────────────────────────────────────┘
          │
          ▼ (solo versión PRODUCCION)
   OpenAI API · WhatsApp Business · Telegram Bot · Gmail
 ```
 
-</div>
+### Stack tecnológico
 
-### 🛠️ Stack Tecnológico
+| Tecnología | Versión | Rol |
+|-----------|---------|-----|
+| **N8N** | latest | Orquestador de workflows |
+| **PostgreSQL** | 15 | Base de datos unificada |
+| **Docker / Docker Compose** | 3.8 | Infraestructura local |
+| **Mailpit** | latest | SMTP local para testing |
+| **Grafana** | latest | Dashboards de métricas |
+| **OpenAI GPT-4o-mini** | vía API | Clasificación de intención y respuestas IA |
+| **WhatsApp Business Cloud API** | Meta v18.0 | Canal WhatsApp (producción) |
+| **Telegram Bot API** | nativo N8N | Canal Telegram |
+| **Gmail OAuth2** | nativo N8N | Canal Email (producción) |
 
-<table>
-<tr>
-<td align="center"><b>🔧 Tecnología</b></td>
-<td align="center"><b>📌 Versión</b></td>
-<td align="center"><b>🎯 Rol</b></td>
-</tr>
-<tr>
-<td><img src="https://img.shields.io/badge/N8N-EA4B71?style=flat-square&logo=n8n&logoColor=white"/> <b>N8N</b></td>
-<td><code>latest</code></td>
-<td>Orquestador de workflows</td>
-</tr>
-<tr>
-<td><img src="https://img.shields.io/badge/PostgreSQL-336791?style=flat-square&logo=postgresql&logoColor=white"/> <b>PostgreSQL</b></td>
-<td><code>15</code></td>
-<td>Base de datos unificada</td>
-</tr>
-<tr>
-<td><img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white"/> <b>Docker / Docker Compose</b></td>
-<td><code>3.8</code></td>
-<td>Infraestructura local</td>
-</tr>
-<tr>
-<td><img src="https://img.shields.io/badge/Mailpit-16A394?style=flat-square&logo=maildotru&logoColor=white"/> <b>Mailpit</b></td>
-<td><code>latest</code></td>
-<td>SMTP local para testing</td>
-</tr>
-<tr>
-<td><img src="https://img.shields.io/badge/Grafana-F46800?style=flat-square&logo=grafana&logoColor=white"/> <b>Grafana</b></td>
-<td><code>latest</code></td>
-<td>Dashboards de métricas</td>
-</tr>
-<tr>
-<td><img src="https://img.shields.io/badge/OpenAI-412991?style=flat-square&logo=openai&logoColor=white"/> <b>GPT-4o-mini</b></td>
-<td><code>vía API</code></td>
-<td>Clasificación de intención y respuestas IA</td>
-</tr>
-<tr>
-<td><img src="https://img.shields.io/badge/WhatsApp-25D366?style=flat-square&logo=whatsapp&logoColor=white"/> <b>WhatsApp Business Cloud API</b></td>
-<td><code>Meta v18.0</code></td>
-<td>Canal WhatsApp (producción)</td>
-</tr>
-<tr>
-<td><img src="https://img.shields.io/badge/Telegram-26A5E4?style=flat-square&logo=telegram&logoColor=white"/> <b>Telegram Bot API</b></td>
-<td><code>nativo N8N</code></td>
-<td>Canal Telegram</td>
-</tr>
-<tr>
-<td><img src="https://img.shields.io/badge/Gmail-EA4335?style=flat-square&logo=gmail&logoColor=white"/> <b>Gmail OAuth2</b></td>
-<td><code>nativo N8N</code></td>
-<td>Canal Email (producción)</td>
-</tr>
-</table>
+---
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+## 📊 Flujo 1 — Pipeline de Procesamiento de Órdenes
 
-## <img src="https://media.giphy.com/media/W5eoZHPpUx9sapR0eu/giphy.gif" width="30"> Flujo 1 — Pipeline de Procesamiento de Órdenes
-
-> **Trigger:** `POST http://localhost:5678/webhook/orden-nueva`
+**Trigger:** `POST http://localhost:5678/webhook/orden-nueva`
 
 ```
 Webhook → Registrar Orden → Verificar Stock
@@ -154,22 +75,15 @@ Webhook → Registrar Orden → Verificar Stock
              Respuesta Webhook
 ```
 
-<details>
-<summary><b>📈 Métricas capturadas automáticamente</b></summary>
-<br/>
+**Métricas capturadas automáticamente:**
+- **MTTD** — tiempo desde que entra la orden hasta que se procesa
+- **MTTR** — tiempo desde el procesamiento hasta que el cliente recibe el email
 
-| Métrica | Descripción |
-|---------|-------------|
-| ⏱️ **MTTD** | Tiempo desde que entra la orden hasta que se procesa |
-| 📬 **MTTR** | Tiempo desde el procesamiento hasta que el cliente recibe el email |
+---
 
-</details>
+## 💬 Flujo 2 — Chatbot Omnicanal con IA
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
-
-## <img src="https://media.giphy.com/media/LnQjpWaON8nhr21vNW/giphy.gif" width="30"> Flujo 2 — Chatbot Omnicanal con IA
-
-> **Triggers:** WhatsApp webhook + Telegram Bot + Gmail (polling cada 1 min)
+**Triggers:** WhatsApp webhook + Telegram Bot + Gmail (polling cada 1 min)
 
 ```
 WhatsApp ──┐
@@ -190,48 +104,33 @@ Gmail ─────┘                                       │
                                           Registrar Interacción
 ```
 
-<details>
-<summary><b>📈 Métricas capturadas automáticamente</b></summary>
-<br/>
+**Métricas capturadas automáticamente:**
+- **TMR** — tiempo de respuesta del chatbot de punta a punta
 
-| Métrica | Descripción |
-|---------|-------------|
-| ⏱️ **TMR** | Tiempo de respuesta del chatbot de punta a punta |
+---
 
-</details>
-
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
-
-## <img src="https://media.giphy.com/media/fYSnHlufseco8Fh93Z/giphy.gif" width="30"> Base de Datos
+## 🗄️ Base de Datos
 
 **5 tablas** en `ecommerce_tesis`:
 
-<table>
-<tr>
-<td align="center"><b>📋 Tabla</b></td>
-<td align="center"><b>📝 Descripción</b></td>
-</tr>
-<tr><td><code>products</code></td><td>Catálogo de productos con stock y precio</td></tr>
-<tr><td><code>orders</code></td><td>Órdenes con su ciclo de vida completo</td></tr>
-<tr><td><code>interactions</code></td><td>Log de conversaciones del chatbot</td></tr>
-<tr><td><code>tickets</code></td><td>Reclamos creados automáticamente</td></tr>
-<tr><td><code>faq_responses</code></td><td>Base de conocimiento del chatbot (editable en caliente)</td></tr>
-</table>
+| Tabla | Descripción |
+|-------|-------------|
+| `products` | Catálogo de productos con stock y precio |
+| `orders` | Órdenes con su ciclo de vida completo |
+| `interactions` | Log de conversaciones del chatbot |
+| `tickets` | Reclamos creados automáticamente |
+| `faq_responses` | Base de conocimiento del chatbot (editable en caliente) |
 
 **5 vistas** para Grafana: `v_order_processing_time`, `v_daily_order_summary`, `v_chatbot_response_time`, `v_daily_chatbot_summary`, `v_metrics_summary`
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+---
 
-## <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="30"> Instalación y Uso
+## 🚀 Instalación y uso
 
-### 📋 Requisitos previos
+### Requisitos previos
 
-<div align="center">
-
-![Docker](https://img.shields.io/badge/Docker_Desktop-Requerido-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Git](https://img.shields.io/badge/Git-Requerido-F05032?style=for-the-badge&logo=git&logoColor=white)
-
-</div>
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Git](https://git-scm.com/)
 
 Verificar instalación:
 ```powershell
@@ -241,18 +140,16 @@ docker compose version
 
 ---
 
-<details>
-<summary><h3>📦 Paso 1 — Clonar el repositorio</h3></summary>
+### Paso 1 — Clonar el repositorio
 
 ```powershell
 git clone https://github.com/IgnacioOdorico/Pipeline-de-automatizacion-del-ciclo-post-venta.git
 cd Pipeline-de-automatización-del-ciclo-post-venta
 ```
 
-</details>
+---
 
-<details>
-<summary><h3>🐳 Paso 2 — Levantar los servicios</h3></summary>
+### Paso 2 — Levantar los servicios
 
 ```powershell
 docker compose up -d
@@ -265,24 +162,22 @@ docker ps
 
 | Servicio | URL | Credenciales |
 |---------|-----|-------------|
-| **N8N** | http://localhost:5678 | `admin` / `admin123` |
-| **Grafana** | http://localhost:3000 | `admin` / `admin` |
+| **N8N** | http://localhost:5678 | admin / admin123 |
+| **Grafana** | http://localhost:3000 | admin / admin |
 | **Mailpit** | http://localhost:8025 | — |
-| **PostgreSQL** | localhost:5432 | `n8n_user` / `n8n_pass` |
+| **PostgreSQL** | localhost:5432 | n8n_user / n8n_pass |
 
-</details>
+---
 
-<details>
-<summary><h3>🗄️ Paso 3 — Crear la base de datos</h3></summary>
+### Paso 3 — Crear la base de datos
 
 ```powershell
 Get-Content init_simple.sql | docker exec -i tesis_postgres psql -U n8n_user -d ecommerce_tesis
 ```
 
-</details>
+---
 
-<details>
-<summary><h3>🌱 Paso 4 — Cargar datos de prueba</h3></summary>
+### Paso 4 — Cargar datos de prueba
 
 ```powershell
 Get-Content seed_expand.sql | docker exec -i tesis_postgres psql -U n8n_user -d ecommerce_tesis
@@ -292,12 +187,11 @@ Verificar:
 ```powershell
 docker exec tesis_postgres psql -U n8n_user -d ecommerce_tesis -c "SELECT COUNT(*) FROM products; SELECT COUNT(*) FROM faq_responses;"
 ```
-> ✅ Debe mostrar **20 productos** y **22 FAQs**.
+Debe mostrar **20 productos** y **22 FAQs**.
 
-</details>
+---
 
-<details>
-<summary><h3>📥 Paso 5 — Importar los workflows en N8N</h3></summary>
+### Paso 5 — Importar los workflows en N8N
 
 1. Abrí **http://localhost:5678**
 2. Ir a **Workflows → botón "..." → Import from file**
@@ -310,14 +204,13 @@ docker exec tesis_postgres psql -U n8n_user -d ecommerce_tesis -c "SELECT COUNT(
 | `workflows/Flujo 1 - ... PRODUCCION.json` | ⏸ Dejar inactivo |
 | `workflows/Flujo 2 - ... PRODUCCION.json` | ⏸ Dejar inactivo |
 
-</details>
+---
 
-<details>
-<summary><h3>🔑 Paso 6 — Configurar credenciales en N8N</h3></summary>
+### Paso 6 — Configurar credenciales en N8N
 
 Ir a **http://localhost:5678 → Credentials**
 
-#### 🐘 PostgreSQL
+#### PostgreSQL
 | Campo | Valor |
 |-------|-------|
 | Host | `postgres` |
@@ -327,7 +220,7 @@ Ir a **http://localhost:5678 → Credentials**
 | Password | `n8n_pass` |
 | SSL | `disabled` |
 
-#### 📧 SMTP (Mailpit — solo para demo local)
+#### SMTP (Mailpit — solo para demo local)
 | Campo | Valor |
 |-------|-------|
 | Host | `mailpit` |
@@ -336,15 +229,14 @@ Ir a **http://localhost:5678 → Credentials**
 | Password | *(vacío)* |
 | SSL/TLS | `None` |
 
-#### 🧠 OpenAI
+#### OpenAI
 | Campo | Valor |
 |-------|-------|
 | API Key | `sk-...` *(tu clave de https://platform.openai.com)* |
 
-</details>
+---
 
-<details>
-<summary><h3>📊 Paso 7 — Configurar Grafana</h3></summary>
+### Paso 7 — Configurar Grafana
 
 1. Abrí **http://localhost:3000** → usuario `admin` / contraseña `admin`
 2. Ir a **Connections → Data sources → Add data source → PostgreSQL**
@@ -361,66 +253,54 @@ Ir a **http://localhost:5678 → Credentials**
 
 4. Click **"Save & test"** → debe decir *"Database Connection OK"*
 
-</details>
+---
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+## 🧪 Cómo enviar datos manualmente a N8N
 
-## <img src="https://media.giphy.com/media/VgCDAzcKvsR6OM0uWg/giphy.gif" width="30"> Cómo enviar datos manualmente a N8N
+Podés disparar los workflows de tres formas distintas. Elegí la que más te resulte cómoda:
 
-<details>
-<summary><b>⚡ Opción 1 — PowerShell (recomendado en Windows)</b></summary>
+---
+
+### 🔵 Opción 1 — PowerShell (recomendado en Windows)
+
+#### ▶ Flujo 1 — Enviar una orden nueva
 
 ```powershell
+# Orden confirmada (producto con stock) — Notebook Lenovo IdeaPad 15
 Invoke-RestMethod `
   -Uri "http://localhost:5678/webhook/orden-nueva" `
   -Method POST `
   -ContentType "application/json" `
   -Body '{
-    "order_number": "ORD-2026-0099",
-    "customer_name": "Juan Pérez",
-    "customer_email": "juan@test.com",
-    "customer_phone": "+5492615001234",
+    "order_number": "ORD-2026-0101",
+    "customer_name": "Martina Lopez",
+    "customer_email": "martina@gmail.com",
+    "customer_phone": "5492614001001",
     "product_sku": "PROD-001",
-    "quantity": 2
+    "quantity": 1
   }'
 ```
-
-</details>
-
-<details>
-<summary><b>🐧 Opción 2 — curl (desde cualquier terminal)</b></summary>
-
-```bash
-curl -X POST http://localhost:5678/webhook/orden-nueva \
-  -H "Content-Type: application/json" \
-  -d '{
-    "order_number": "ORD-2026-0099",
-    "customer_name": "Juan Pérez",
-    "customer_email": "juan@test.com",
-    "customer_phone": "+5492615001234",
-    "product_sku": "PROD-001",
-    "quantity": 2
-  }'
-```
-
-</details>
-
-<details>
-<summary><b>🔧 Opción 3 — Postman o Insomnia (interfaz gráfica)</b></summary>
-
-1. Crear nueva request **POST**
-2. URL: `http://localhost:5678/webhook/orden-nueva`
-3. Body → **raw → JSON**
-4. Pegar el JSON y click **Send**
-
-</details>
-
-<details>
-<summary><b>🤖 Opción 4 — Probar el chatbot manualmente</b></summary>
-
-Para simular un mensaje de WhatsApp/Telegram al Flujo 2:
 
 ```powershell
+# Orden sin stock — Monitor LG 27" 4K (stock bajo, se agota fácil)
+Invoke-RestMethod `
+  -Uri "http://localhost:5678/webhook/orden-nueva" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body '{
+    "order_number": "ORD-2026-0102",
+    "customer_name": "Lucas Fernandez",
+    "customer_email": "lucas@outlook.com",
+    "customer_phone": "5492614006006",
+    "product_sku": "PROD-014",
+    "quantity": 10
+  }'
+```
+
+#### ▶ Flujo 2 — Simular mensajes al chatbot
+
+```powershell
+# Consulta de estado de pedido via WhatsApp
 Invoke-RestMethod `
   -Uri "http://localhost:5678/webhook/whatsapp" `
   -Method POST `
@@ -430,30 +310,187 @@ Invoke-RestMethod `
       "changes": [{
         "value": {
           "messages": [{
-            "from": "5492615001234",
-            "text": { "body": "Hola, ¿cuál es el estado de mi pedido ORD-2026-0001?" }
+            "from": "5492614002002",
+            "text": { "body": "Hola! quiero saber el estado de mi pedido ORD-HIST-002" }
           }],
-          "contacts": [{ "profile": { "name": "Juan Pérez" } }]
+          "contacts": [{ "profile": { "name": "Facundo Rios" } }]
         }
       }]
     }]
   }'
 ```
 
-</details>
+```powershell
+# Pregunta frecuente via WhatsApp
+Invoke-RestMethod `
+  -Uri "http://localhost:5678/webhook/whatsapp" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body '{
+    "entry": [{
+      "changes": [{
+        "value": {
+          "messages": [{
+            "from": "5492614005005",
+            "text": { "body": "Buenas, ¿puedo pagar en cuotas con Visa?" }
+          }],
+          "contacts": [{ "profile": { "name": "Valentina Cruz" } }]
+        }
+      }]
+    }]
+  }'
+```
 
-<details>
-<summary><b>🖥️ Opción 5 — Desde N8N directamente (sin HTTP)</b></summary>
+```powershell
+# Reclamo urgente via WhatsApp (activa alerta al admin)
+Invoke-RestMethod `
+  -Uri "http://localhost:5678/webhook/whatsapp" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body '{
+    "entry": [{
+      "changes": [{
+        "value": {
+          "messages": [{
+            "from": "5492614006006",
+            "text": { "body": "Me llegó el producto roto y si no me lo reemplazan hoy voy a defensa del consumidor" }
+          }],
+          "contacts": [{ "profile": { "name": "Lucas Fernandez" } }]
+        }
+      }]
+    }]
+  }'
+```
+
+---
+
+### 🟠 Opción 2 — curl (desde Git Bash, WSL o Linux/Mac)
+
+#### ▶ Flujo 1 — Enviar una orden nueva
+
+```bash
+# Orden confirmada — Teclado Mecánico Redragon K552
+curl -X POST http://localhost:5678/webhook/orden-nueva \
+  -H "Content-Type: application/json" \
+  -d '{
+    "order_number": "ORD-2026-0103",
+    "customer_name": "Agustina Moreno",
+    "customer_email": "agus@gmail.com",
+    "customer_phone": "5492614007007",
+    "product_sku": "PROD-003",
+    "quantity": 2
+  }'
+```
+
+```bash
+# Orden sin stock — forzar el camino alternativo
+curl -X POST http://localhost:5678/webhook/orden-nueva \
+  -H "Content-Type: application/json" \
+  -d '{
+    "order_number": "ORD-2026-0104",
+    "customer_name": "Bruno Herrera",
+    "customer_email": "bruno@gmail.com",
+    "customer_phone": "5492614010010",
+    "product_sku": "PROD-013",
+    "quantity": 99
+  }'
+```
+
+#### ▶ Flujo 2 — Simular mensajes al chatbot
+
+```bash
+# Consulta de estado de pedido
+curl -X POST http://localhost:5678/webhook/whatsapp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "entry": [{
+      "changes": [{
+        "value": {
+          "messages": [{"from": "5492614003003", "text": {"body": "Hola, me llegó el producto equivocado, pedí auriculares negros y me mandaron blancos"}}],
+          "contacts": [{"profile": {"name": "Camila Suarez"}}]
+        }
+      }]
+    }]
+  }'
+```
+
+---
+
+### 🟣 Opción 3 — Postman o Insomnia (interfaz gráfica)
+
+1. Crear nueva request **POST**
+2. URL: `http://localhost:5678/webhook/orden-nueva`
+3. Headers: `Content-Type: application/json`
+4. Body → **raw → JSON**, pegar uno de estos ejemplos:
+
+```json
+{
+  "order_number": "ORD-2026-0105",
+  "customer_name": "Tomás Gutierrez",
+  "customer_email": "tomas@gmail.com",
+  "customer_phone": "5492614008008",
+  "product_sku": "PROD-018",
+  "quantity": 5
+}
+```
+
+**Para el chatbot** usar URL: `http://localhost:5678/webhook/whatsapp` con este body:
+```json
+{
+  "entry": [{
+    "changes": [{
+      "value": {
+        "messages": [{"from": "5492614009009", "text": {"body": "Quiero cancelar mi pedido ORD-HIST-009, cambié de opinión"}}],
+        "contacts": [{"profile": {"name": "Micaela Vargas"}}]
+      }
+    }]
+  }]
+}
+```
+
+---
+
+### 🟢 Opción 4 — Desde N8N directamente (ver nodo por nodo)
+
+Esta opción es ideal para **debugging** y ver qué hace cada nodo en detalle:
 
 1. Abrí el workflow en **http://localhost:5678**
-2. Click en el nodo **Webhook**
-3. Click en **"Listen for test event"**
-4. Enviá el request desde PowerShell/Postman
-5. El workflow se ejecuta y podés ver el resultado en cada nodo
+2. Click en el nodo **Webhook** (el primero del flujo)
+3. Click en **"Listen for test event"** — N8N queda esperando
+4. Enviá cualquier request de las opciones 1, 2 o 3
+5. El workflow se pausa en cada nodo y podés ver los datos que pasan
 
-</details>
+---
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+### 📦 Catálogo de productos disponibles para pruebas
+
+| SKU | Producto | Precio | Stock |
+|-----|---------|--------|-------|
+| `PROD-001` | Notebook Lenovo IdeaPad 15 | $599.99 | Alto |
+| `PROD-002` | Mouse Logitech MX Master 3 | $79.99 | Alto |
+| `PROD-003` | Teclado Mecánico Redragon K552 | $49.99 | Alto |
+| `PROD-004` | Webcam Logitech C920 HD Pro | $129.99 | Alto |
+| `PROD-005` | Monitor Samsung 27" FHD | $349.99 | Alto |
+| `PROD-013` | Notebook HP Victus 15 Gaming | $799.99 | Bajo (5 unidades) |
+| `PROD-014` | Monitor LG 27" 4K UltraFine | $449.99 | Muy bajo (3 unidades) |
+| `PROD-018` | Pendrive Kingston 64GB USB 3.2 | $9.99 | Muy alto (80 unidades) |
+
+> 💡 **Tip:** Para forzar el camino de **sin stock**, pedí más de 50 unidades de cualquier producto o más de 10 del `PROD-014`.
+
+---
+
+### 💬 Mensajes de prueba para el chatbot (Flujo 2)
+
+| Tipo de consulta | Mensaje de ejemplo | Intent esperado |
+|-----------------|-------------------|----------------|
+| Pregunta frecuente | `"¿Puedo pagar en cuotas?"` | `FAQ` |
+| Estado de pedido | `"¿Dónde está mi pedido ORD-HIST-001?"` | `ESTADO_PEDIDO` |
+| Reclamo normal | `"Me llegó el producto equivocado"` | `RECLAMO` |
+| Reclamo urgente | `"Voy a defensa del consumidor si no me responden"` | `RECLAMO` + urgente |
+| Consulta general | `"¿Tienen local físico en Mendoza?"` | `GENERAL` |
+| En inglés | `"Hi, I need help with my order"` | `GENERAL` (responde en inglés) |
+
+---
 
 ## 📁 Estructura del proyecto
 
@@ -481,90 +518,54 @@ Invoke-RestMethod `
 └── imagenes/                       ← Capturas de pantalla del sistema
 ```
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+---
 
 ## 🔧 Comandos útiles
 
 ```powershell
-# 🚀 Levantar todo
+# Levantar todo
 docker compose up -d
 
-# ⏹️ Detener todo (sin borrar datos)
+# Detener todo (sin borrar datos)
 docker compose down
 
-# 📋 Ver logs en tiempo real
+# Ver logs en tiempo real
 docker compose logs -f n8n
 
-# 🔄 Reiniciar solo N8N
+# Reiniciar solo N8N
 docker compose restart n8n
 
-# 💾 Hacer backup completo
+# Hacer backup completo
 .\backup.ps1
 
-# ♻️ Restaurar desde backup
+# Restaurar desde backup
 .\restore.ps1
 
-# 🗄️ Acceder a la BD directamente
+# Acceder a la BD directamente
 docker exec -it tesis_postgres psql -U n8n_user -d ecommerce_tesis
 
-# 📦 Ver todas las órdenes
+# Ver todas las órdenes
 docker exec tesis_postgres psql -U n8n_user -d ecommerce_tesis -c "SELECT * FROM orders ORDER BY received_at DESC LIMIT 10;"
 
-# 📊 Ver métricas resumidas
+# Ver métricas resumidas
 docker exec tesis_postgres psql -U n8n_user -d ecommerce_tesis -c "SELECT * FROM v_metrics_summary;"
 ```
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+---
 
 ## ❗ Problemas frecuentes
 
 | Problema | Solución |
 |---------|---------|
-| 🐳 Docker no arranca | Verificar que Docker Desktop esté corriendo (ícono en la barra de tareas) |
-| 🐘 PostgreSQL no conecta | Esperar 30 segundos después de `docker compose up -d` y reintentar |
-| ⚠️ N8N muestra error en nodos | Verificar que las credenciales estén configuradas (Paso 6) |
-| 📊 Grafana muestra "No data" | Verificar que el datasource PostgreSQL esté configurado y muestre "Connection OK" |
-| 🔴 Workflows no activos | En N8N, abrir cada workflow y activar el toggle arriba a la derecha |
-| 🔗 Webhook no responde | Verificar que el workflow esté activo y que la URL sea correcta |
+| Docker no arranca | Verificar que Docker Desktop esté corriendo (ícono en la barra de tareas) |
+| PostgreSQL no conecta | Esperar 30 segundos después de `docker compose up -d` y reintentar |
+| N8N muestra error en nodos | Verificar que las credenciales estén configuradas (Paso 6) |
+| Grafana muestra "No data" | Verificar que el datasource PostgreSQL esté configurado y muestre "Connection OK" |
+| Workflows no activos | En N8N, abrir cada workflow y activar el toggle arriba a la derecha |
+| Webhook no responde | Verificar que el workflow esté activo y que la URL sea correcta |
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
-
-<div align="center">
-
-## 👥 Equipo
-
-<img src="docs/imagenes/robot_team.png" width="220" alt="Equipo del Proyecto"/>
-
-<br/><br/>
-
-| 👤 Integrante | 🎓 Rol |
-|:---:|:---:|
-| **Ignacio Odorico** | Desarrollador |
-| **Santiago Sordi** | Desarrollador |
-| **Juan Cruz Ana** | Desarrollador |
-
-<br/>
-
-**Tutor:** Prof. Alberto Cortez
-
-<br/>
-
-</div>
-
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
-
-<div align="center">
+---
 
 ## 📄 Licencia
 
-Proyecto académico — **UTN FRM 2026**. Uso educativo.
-
-<br/>
-
-![Made with Love](https://img.shields.io/badge/Hecho_con-❤️-FF0000?style=for-the-badge)
-![UTN FRM](https://img.shields.io/badge/UTN-FRM_2026-1a7f5a?style=for-the-badge)
-![Status](https://img.shields.io/badge/Estado-En_Desarrollo-2DD4BF?style=for-the-badge)
-
-</div>
-
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,50:1a7f5a,100:2dd4bf&height=120&section=footer"/>
+Proyecto académico — UTN FRM 2026. Uso educativo.

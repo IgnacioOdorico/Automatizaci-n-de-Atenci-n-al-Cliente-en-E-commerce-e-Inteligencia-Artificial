@@ -1,0 +1,32 @@
+# ============================================================
+#  Pipeline Post-Venta — .gitignore
+# ============================================================
+
+# --- Secretos / entorno -------------------------------------
+# El .env REAL nunca se versiona. El .env.example SI (es la plantilla).
+.env
+.env.*
+!.env.example
+
+# Credenciales reales de n8n (la guía .example si se versiona)
+CREDENCIALES.md
+cookies.txt
+
+# --- Backups -------------------------------------------------
+# Dumps de BD + credenciales/workflows exportados por backup.ps1
+backups/
+
+# --- Temporales del sistema ---------------------------------
+# Lock de Word al tener un .docx abierto
+~$*
+*.tmp
+
+# --- Memoria de proyecto (engram) ---------------------------
+# Solo si NO querés versionar la memoria. Si la querés versionar,
+# borrá esta línea (ver protocolo engram).
+.engram/
+
+# --- OS ------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
