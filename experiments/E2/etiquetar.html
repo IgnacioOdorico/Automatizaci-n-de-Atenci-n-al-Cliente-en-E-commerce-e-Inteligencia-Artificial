@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E2 — Etiquetado de intents</title>
+<style>
+  :root{
+    --bg:#12141a; --panel:#1a1d26; --panel2:#222633; --line:#2e3444;
+    --fg:#e8eaf0; --dim:#8b93a7;
+    --faq:#3b82f6; --est:#10b981; --rec:#ef4444; --gen:#a855f7;
+    --acc:#f0b429;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+       font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;
+       min-height:100vh;display:flex;flex-direction:column}
+
+  header{padding:14px 20px;border-bottom:1px solid var(--line);
+         display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  header h1{font-size:15px;margin:0;font-weight:600;letter-spacing:.2px}
+  header .sp{flex:1}
+  .badge{font-size:12px;color:var(--dim);background:var(--panel2);
+         padding:4px 10px;border-radius:99px;border:1px solid var(--line)}
+  .badge b{color:var(--fg);font-variant-numeric:tabular-nums}
+
+  #barra{height:3px;background:var(--panel2)}
+  #barra div{height:100%;width:0;background:var(--acc);transition:width .15s}
+
+  main{flex:1;display:flex;flex-direction:column;align-items:center;
+       justify-content:center;padding:24px;gap:28px}
+
+  #pantallaCarga{max-width:620px;text-align:center}
+  #pantallaCarga p{color:var(--dim);line-height:1.65;font-size:14px}
+  #pantallaCarga h2{font-size:20px;margin:0 0 14px}
+  .drop{border:2px dashed var(--line);border-radius:14px;padding:38px 26px;
+        margin:22px 0;cursor:pointer;transition:.15s;background:var(--panel)}
+  .drop:hover,.drop.over{border-color:var(--acc);background:var(--panel2)}
+  .drop b{color:var(--acc)}
+  input[type=file]{display:none}
+
+  #contador{font-size:12px;color:var(--dim);letter-spacing:2.4px;
+            text-transform:uppercase;font-variant-numeric:tabular-nums}
+  #mensaje{font-size:clamp(20px,3.6vw,34px);line-height:1.45;font-weight:500;
+           max-width:900px;text-align:center;padding:34px 30px;
+           background:var(--panel);border:1px solid var(--line);
+           border-radius:16px;min-height:150px;
+           display:flex;align-items:center;justify-content:center;
+           overflow-wrap:anywhere}
+
+  #opciones{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));
+            gap:12px;width:100%;max-width:900px}
+  .op{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+      padding:16px 12px;cursor:pointer;text-align:center;transition:.12s;
+      color:var(--fg);font-family:inherit;font-size:14px}
+  .op:hover{background:var(--panel2);transform:translateY(-2px)}
+  .op:active{transform:translateY(0)}
+  .op .k{display:block;font-size:20px;font-weight:700;margin-bottom:6px}
+  .op .n{display:block;font-size:12px;letter-spacing:.6px;font-weight:600}
+  .op[data-i="FAQ"]{border-top:3px solid var(--faq)} .op[data-i="FAQ"] .k{color:var(--faq)}
+  .op[data-i="ESTADO_PEDIDO"]{border-top:3px solid var(--est)} .op[data-i="ESTADO_PEDIDO"] .k{color:var(--est)}
+  .op[data-i="RECLAMO"]{border-top:3px solid var(--rec)} .op[data-i="RECLAMO"] .k{color:var(--rec)}
+  .op[data-i="GENERAL"]{border-top:3px solid var(--gen)} .op[data-i="GENERAL"] .k{color:var(--gen)}
+  .op .d{display:block;font-size:11px;color:var(--dim);margin-top:5px;line-height:1.35}
+
+  #ayuda{font-size:12px;color:var(--dim);text-align:center}
+  kbd{background:var(--panel2);border:1px solid var(--line);border-bottom-width:2px;
+      border-radius:5px;padding:1px 6px;font-size:11px;font-family:ui-monospace,monospace}
+
+  .btn{background:var(--acc);color:#12141a;border:0;border-radius:9px;
+       padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;
+       font-family:inherit}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.sec{background:transparent;color:var(--dim);border:1px solid var(--line);font-weight:500}
+  .btn.sec:hover{color:var(--fg);border-color:var(--dim)}
+
+  #fin{text-align:center;max-width:640px}
+  #fin h2{font-size:24px;margin:0 0 10px}
+  #fin p{color:var(--dim);line-height:1.65;font-size:14px}
+  #resumen{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px 0}
+  #resumen div{background:var(--panel);border:1px solid var(--line);
+               border-radius:10px;padding:12px 18px;min-width:110px}
+  #resumen .n{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+  #resumen .l{font-size:11px;color:var(--dim);letter-spacing:.5px;margin-top:2px}
+  .acciones{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+  .oculto{display:none !important}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>E2 · Etiquetado de intents</h1>
+  <span class="badge" id="bModo">—</span>
+  <div class="sp"></div>
+  <span class="badge" id="bProg">—</span>
+  <button class="btn sec oculto" id="btnDeshacer">← Corregir anterior</button>
+</header>
+<div id="barra"><div></div></div>
+
+<main>
+
+  <!-- ---------- Carga ---------- -->
+  <section id="pantallaCarga">
+    <h2>Cargá el corpus congelado</h2>
+    <p>Elegí <code>corpus_intents.csv</code>. Es el archivo commiteado en git — no lo edites.</p>
+    <label class="drop" id="drop">
+      <input type="file" id="archivo" accept=".csv,text/csv">
+      <b>Clic para elegir el archivo</b><br>
+      <span style="font-size:13px;color:var(--dim)">o arrastralo acá</span>
+    </label>
+    <div class="acciones">
+      <button class="btn" id="btnR1">Ronda 1 — los 150</button>
+      <button class="btn sec" id="btnR2">Ronda 2 — control de 50 al azar</button>
+    </div>
+    <p style="margin-top:22px;font-size:13px">
+      Se guarda solo en este navegador mientras etiquetás. Si cerrás la pestaña,
+      al volver retomás donde ibas.
+    </p>
+  </section>
+
+  <!-- ---------- Etiquetado ---------- -->
+  <section id="pantallaEtiq" class="oculto" style="display:flex;flex-direction:column;align-items:center;gap:26px;width:100%">
+    <div id="contador">— de —</div>
+    <div id="mensaje"></div>
+    <div id="opciones">
+      <button class="op" data-i="FAQ">
+        <span class="k">1</span><span class="n">FAQ</span>
+        <span class="d">Pregunta general sobre la tienda: envíos, pagos, garantía, políticas</span>
+      </button>
+      <button class="op" data-i="ESTADO_PEDIDO">
+        <span class="k">2</span><span class="n">ESTADO_PEDIDO</span>
+        <span class="d">Pregunta por SU compra concreta: dónde está, cuándo llega</span>
+      </button>
+      <button class="op" data-i="RECLAMO">
+        <span class="k">3</span><span class="n">RECLAMO</span>
+        <span class="d">Algo salió mal y se queja o exige una solución</span>
+      </button>
+      <button class="op" data-i="GENERAL">
+        <span class="k">4</span><span class="n">GENERAL</span>
+        <span class="d">Saludo, agradecimiento, charla, o nada clasificable</span>
+      </button>
+    </div>
+    <div id="ayuda">
+      <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd> para elegir ·
+      <kbd>←</kbd> o <kbd>Backspace</kbd> para corregir el anterior
+    </div>
+  </section>
+
+  <!-- ---------- Fin ---------- -->
+  <section id="fin" class="oculto">
+    <h2>Listo. Etiquetaste todo.</h2>
+    <div id="resumen"></div>
+    <p id="finTexto"></p>
+    <div class="acciones">
+      <button class="btn" id="btnBajar">Descargar CSV</button>
+      <button class="btn sec" id="btnReiniciar">Empezar de nuevo</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const INTENTS = ['FAQ','ESTADO_PEDIDO','RECLAMO','GENERAL'];
+  const TECLAS  = {'1':'FAQ','2':'ESTADO_PEDIDO','3':'RECLAMO','4':'GENERAL'};
+
+  const $ = id => document.getElementById(id);
+  const el = {
+    carga:$('pantallaCarga'), etiq:$('pantallaEtiq'), fin:$('fin'),
+    archivo:$('archivo'), drop:$('drop'),
+    btnR1:$('btnR1'), btnR2:$('btnR2'),
+    contador:$('contador'), mensaje:$('mensaje'),
+    bModo:$('bModo'), bProg:$('bProg'), barra:$('barra').firstElementChild,
+    deshacer:$('btnDeshacer'), resumen:$('resumen'), finTexto:$('finTexto'),
+    bajar:$('btnBajar'), reiniciar:$('btnReiniciar')
+  };
+
+  let filas = [];        // corpus cargado, ya en el orden de presentación
+  let etiquetas = [];    // {id, intent, ms}
+  let idx = 0;
+  let modo = 'ronda1';
+  let tCorte = 0;        // timestamp del último avance, para medir segundos por ítem
+  let csvCrudo = '';
+
+  const CLAVE = 'e2_etiquetado_v1';
+
+  // ---------- Parser CSV (comillas dobles, comas internas, CRLF) ----------
+  function parsearCsv(texto){
+    texto = texto.replace(/^﻿/,'');           // BOM
+    const filas = []; let campo = ''; let fila = [];
+    let enComillas = false;
+    for (let i = 0; i < texto.length; i++){
+      const c = texto[i];
+      if (enComillas){
+        if (c === '"'){
+          if (texto[i+1] === '"'){ campo += '"'; i++; }
+          else enComillas = false;
+        } else campo += c;
+      } else if (c === '"'){ enComillas = true; }
+      else if (c === ','){ fila.push(campo); campo = ''; }
+      else if (c === '\n'){ fila.push(campo); filas.push(fila); fila = []; campo = ''; }
+      else if (c === '\r'){ /* ignorar */ }
+      else campo += c;
+    }
+    if (campo !== '' || fila.length) { fila.push(campo); filas.push(fila); }
+    return filas.filter(f => f.some(v => v.trim() !== ''));
+  }
+
+  function cargarCorpus(texto){
+    const bruto = parsearCsv(texto);
+    if (!bruto.length) throw new Error('El archivo está vacío.');
+    const cab = bruto[0].map(h => h.trim().toLowerCase());
+    const iId  = cab.indexOf('id');
+    const iUsr = cab.indexOf('user_id');
+    const iMsg = cab.indexOf('mensaje');
+    if (iId < 0 || iMsg < 0)
+      throw new Error('El CSV tiene que tener al menos las columnas "id" y "mensaje".');
+    if (cab.includes('intent'))
+      throw new Error('Este CSV ya trae una columna "intent". Cargá el corpus SIN etiquetar.');
+
+    return bruto.slice(1).map(f => ({
+      id: f[iId].trim(),
+      user_id: iUsr >= 0 ? f[iUsr].trim() : '',
+      mensaje: f[iMsg]
+    }));
+  }
+
+  // ---------- Fisher–Yates ----------
+  function mezclar(a){
+    const r = a.slice();
+    for (let i = r.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [r[i], r[j]] = [r[j], r[i]];
+    }
+    return r;
+  }
+
+  // ---------- Persistencia ----------
+  function guardar(){
+    try {
+      localStorage.setItem(CLAVE, JSON.stringify({modo, idx, etiquetas, filas, csvCrudo}));
+    } catch(e){ /* sin localStorage: se sigue igual, solo se pierde el retomar */ }
+  }
+  function restaurar(){
+    try {
+      const s = JSON.parse(localStorage.getItem(CLAVE) || 'null');
+      if (!s || !s.filas || !s.filas.length) return false;
+      ({modo, idx, etiquetas, filas, csvCrudo} = s);
+      return true;
+    } catch(e){ return false; }
+  }
+
+  // ---------- Render ----------
+  function pintar(){
+    const total = filas.length;
+    el.bModo.textContent = modo === 'ronda1' ? 'Ronda 1 · 150' : 'Ronda 2 · control';
+    el.bProg.innerHTML = `<b>${idx}</b> / ${total}`;
+    el.barra.style.width = (total ? idx/total*100 : 0) + '%';
+    el.deshacer.classList.toggle('oculto', idx === 0);
+
+    if (idx >= total){ terminar(); return; }
+
+    el.carga.classList.add('oculto');
+    el.fin.classList.add('oculto');
+    el.etiq.classList.remove('oculto');
+    el.contador.textContent = `${idx+1} de ${total}`;
+    el.mensaje.textContent = filas[idx].mensaje;
+    tCorte = performance.now();
+  }
+
+  function etiquetar(intent){
+    if (idx >= filas.length) return;
+    etiquetas[idx] = {
+      id: filas[idx].id,
+      intent,
+      ms: Math.round(performance.now() - tCorte)
+    };
+    idx++;
+    guardar();
+    pintar();
+  }
+
+  function retroceder(){
+    if (idx === 0) return;
+    idx--;
+    etiquetas.length = idx;
+    guardar();
+    pintar();
+  }
+
+  function terminar(){
+    el.etiq.classList.add('oculto');
+    el.carga.classList.add('oculto');
+    el.fin.classList.remove('oculto');
+    el.deshacer.classList.add('oculto');
+
+    const conteo = Object.fromEntries(INTENTS.map(i => [i, 0]));
+    let msTotal = 0;
+    etiquetas.forEach(e => { conteo[e.intent]++; msTotal += e.ms; });
+
+    el.resumen.innerHTML = INTENTS.map(i =>
+      `<div><div class="n" style="color:var(--${
+        {FAQ:'faq',ESTADO_PEDIDO:'est',RECLAMO:'rec',GENERAL:'gen'}[i]
+      })">${conteo[i]}</div><div class="l">${i}</div></div>`
+    ).join('');
+
+    const min = Math.round(msTotal/60000);
+    el.finTexto.textContent =
+      `${etiquetas.length} mensajes en ${min} minuto${min===1?'':'s'} ` +
+      `(${(msTotal/etiquetas.length/1000).toFixed(1)} s por mensaje). ` +
+      `Descargá el CSV y guardalo en experiments/E2/.`;
+  }
+
+  // ---------- Descarga ----------
+  function bajarCsv(){
+    const sello = new Date().toISOString().slice(0,16).replace('T','_').replace(':','-');
+    const lineas = ['id,intent,segundos'];
+    etiquetas.forEach(e => lineas.push(`${e.id},${e.intent},${(e.ms/1000).toFixed(1)}`));
+    const blob = new Blob(['﻿' + lineas.join('\r\n') + '\r\n'],
+                          {type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `etiquetas_${modo}_${sello}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  // ---------- Arranque ----------
+  function iniciar(){
+    if (!csvCrudo){ alert('Primero elegí el archivo corpus_intents.csv.'); return; }
+    let corpus;
+    try { corpus = cargarCorpus(csvCrudo); }
+    catch(e){ alert(e.message); return; }
+
+    if (modo === 'ronda2'){
+      if (corpus.length < 50){ alert('El corpus tiene menos de 50 mensajes.'); return; }
+      filas = mezclar(corpus).slice(0,50);
+    } else {
+      filas = corpus;
+    }
+    etiquetas = []; idx = 0;
+    guardar();
+    pintar();
+  }
+
+  // ---------- Eventos ----------
+  el.archivo.addEventListener('change', ev => {
+    const f = ev.target.files[0];
+    if (!f) return;
+    f.text().then(t => {
+      csvCrudo = t;
+      el.drop.innerHTML = `<b>${f.name}</b><br><span style="font-size:13px;color:var(--dim)">` +
+                          `${parsearCsv(t).length - 1} mensajes · elegí la ronda</span>`;
+    });
+  });
+
+  ['dragover','dragenter'].forEach(e =>
+    el.drop.addEventListener(e, ev => { ev.preventDefault(); el.drop.classList.add('over'); }));
+  ['dragleave','drop'].forEach(e =>
+    el.drop.addEventListener(e, ev => { ev.preventDefault(); el.drop.classList.remove('over'); }));
+  el.drop.addEventListener('drop', ev => {
+    const f = ev.dataTransfer.files[0];
+    if (!f) return;
+    el.archivo.files = ev.dataTransfer.files;
+    el.archivo.dispatchEvent(new Event('change'));
+  });
+
+  el.btnR1.addEventListener('click', () => { modo = 'ronda1'; iniciar(); });
+  el.btnR2.addEventListener('click', () => { modo = 'ronda2'; iniciar(); });
+
+  document.querySelectorAll('.op').forEach(b =>
+    b.addEventListener('click', () => etiquetar(b.dataset.i)));
+
+  el.deshacer.addEventListener('click', retroceder);
+  el.bajar.addEventListener('click', bajarCsv);
+  el.reiniciar.addEventListener('click', () => {
+    if (!confirm('Se borra lo etiquetado en esta sesión. ¿Seguro?')) return;
+    localStorage.removeItem(CLAVE);
+    location.reload();
+  });
+
+  document.addEventListener('keydown', ev => {
+    if (el.etiq.classList.contains('oculto')) return;
+    if (TECLAS[ev.key]){ ev.preventDefault(); etiquetar(TECLAS[ev.key]); }
+    else if (ev.key === 'ArrowLeft' || ev.key === 'Backspace'){ ev.preventDefault(); retroceder(); }
+  });
+
+  // Retomar si había algo a medio hacer
+  if (restaurar() && idx < filas.length){
+    if (confirm(`Tenías ${idx} de ${filas.length} etiquetados. ¿Seguir desde ahí?`)) pintar();
+    else localStorage.removeItem(CLAVE);
+  } else if (etiquetas.length && idx >= filas.length){
+    terminar();
+  }
+})();
+</script>
+</body>
+</html>
