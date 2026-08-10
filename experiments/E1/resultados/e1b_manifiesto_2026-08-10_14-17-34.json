@@ -1,0 +1,16 @@
+﻿{
+    "requests":  20,
+    "stock_original":  4,
+    "experimento":  "E1.b - concurrencia y atomicidad Flujo 1",
+    "stock_por_ronda":  5,
+    "prefijo":  "ORD-E1B2",
+    "archivo_rondas":  "e1b_rondas_2026-08-10_14-17-34.csv",
+    "archivo_detalle":  "e1b_envios_2026-08-10_14-17-34.csv",
+    "nodos_flujo1":  13,
+    "host_powershell":  "5.1.26100.8972",
+    "git_commit":  "ddf43c5",
+    "ejecutado_utc":  "2026-08-10 17:17:49",
+    "endpoint":  "http://localhost:5678/webhook/orden-nueva",
+    "sku":  "PROD-005",
+    "rondas":  3
+}

@@ -1,0 +1,19 @@
+﻿{
+    "inicio_utc":  "2026-08-10 17:13:19",
+    "espaciado_seg":  2,
+    "nodos_flujo1":  13,
+    "ejecutado_utc":  "2026-08-10 17:15:02",
+    "sin_stock":  15,
+    "archivo_csv":  "e1a_envios_2026-08-10_14-13-19.csv",
+    "n":  50,
+    "git_commit":  "ddf43c5",
+    "d4_aplicado":  true,
+    "prefijo":  "ORD-E1A",
+    "con_stock":  35,
+    "endpoint":  "http://localhost:5678/webhook/orden-nueva",
+    "host_powershell":  "5.1.26100.8972",
+    "semilla":  20260810,
+    "data_source":  true,
+    "fin_utc":  "2026-08-10 17:15:02",
+    "experimento":  "E1.a - carga secuencial Flujo 1"
+}
