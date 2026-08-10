@@ -158,16 +158,41 @@ experiments/E2/
 ├── README.md                 # esto
 ├── corpus_intents.csv        # 150 mensajes SIN etiqueta — congelado en git
 ├── etiquetar.html            # herramienta de etiquetado (offline, sin dependencias)
+├── run_flujo2_corpus.ps1     # ejecución contra /webhook/whatsapp + conciliación
+├── analizar_e2.py            # accuracy, Wilson, matriz, F1, binomial, κ, TMR (E3)
 ├── etiquetas_ronda1.csv      # ← lo generás vos (150)
-└── etiquetas_ronda2.csv      # ← lo generás vos (50 de control)
+├── etiquetas_ronda2.csv      # ← lo generás vos (50 de control)
+└── resultados/               # lo escribe run_flujo2_corpus.ps1
 ```
+
+## Cómo se corre, de punta a punta
+
+```powershell
+# 1. Etiquetar (vos). Abrir en el navegador, sin servidor:
+#    etiquetar.html -> ronda 1 -> guardar como etiquetas_ronda1.csv
+
+# 2. Al día siguiente, ronda 2 de control -> etiquetas_ronda2.csv
+
+# 3. Ejecutar el corpus contra el pipeline real (~8 min, ~USD 0,05)
+cd experiments\E2
+.\run_flujo2_corpus.ps1 -DryRun      # verifica entorno, no envía nada
+.\run_flujo2_corpus.ps1
+
+# 4. Analizar
+python analizar_e2.py | Tee-Object resultados\e2_analisis.txt
+```
+
+`run_flujo2_corpus.ps1` **se niega a ejecutar si no existe `etiquetas_ronda1.csv`**. No es un capricho: si el corpus se corre antes de etiquetar, la salida del modelo queda visible y el ground truth deja de ser ciego. Es justamente el hallazgo A-04 que este experimento viene a cerrar. El flag `-SinEtiquetas` existe solo para pruebas de humo del script.
+
+`analizar_e2.py` usa **solo biblioteca estándar** — sin numpy, sin scipy, sin pandas. Wilson y el binomial exacto están implementados a mano y verificados contra valores conocidos.
 
 ## Estado
 
 - [x] Corpus construido (150, sin etiquetas)
 - [x] Herramienta de etiquetado
-- [ ] Commit del corpus **antes de etiquetar**
-- [ ] Ronda 1 — 150 etiquetas
+- [x] Commit del corpus **antes de etiquetar** (`e380553`)
+- [x] Script de ejecución contra `/webhook/whatsapp` + conciliación B-6.6
+- [x] Script de análisis: accuracy, Wilson, matriz de confusión, F1, binomial, κ, TMR
+- [ ] **Ronda 1 — 150 etiquetas** ← el paso que falta
 - [ ] Ronda 2 — 50 de control
-- [ ] Script de ejecución contra `/webhook/whatsapp`
-- [ ] Análisis: accuracy, Wilson, matriz de confusión, F1, binomial, κ
+- [ ] Ejecución y análisis
