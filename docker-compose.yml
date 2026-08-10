@@ -52,6 +52,12 @@ services:
       - N8N_SMTP_HOST=mailpit
       - N8N_SMTP_PORT=1025
       - N8N_SMTP_SENDER=tesis@ecommerce.local
+      # Mailpit escucha SMTP PLANO en el 1025. n8n asume SSL por defecto
+      # (N8N_SMTP_SSL=true), asi que sin estas dos lineas el handshake muere con
+      # "SSL routines: wrong version number" y NINGUN mail de la instancia sale:
+      # ni el de reseteo de contrasena ni el aviso de fallo en produccion.
+      - N8N_SMTP_SSL=false
+      - N8N_SMTP_STARTTLS=false
       # Timezone Argentina
       - GENERIC_TIMEZONE=America/Argentina/Mendoza
       - TZ=America/Argentina/Mendoza

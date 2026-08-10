@@ -1,3 +1,39 @@
+-- ############################################################
+-- ##                                                        ##
+-- ##   ARCHIVO CONGELADO — NO EJECUTAR                      ##
+-- ##                                                        ##
+-- ############################################################
+--
+-- Congelado el 2026-08-09 por B-3 del plan de regeneracion de
+-- evidencia (docs/PLAN_REGENERACION_EVIDENCIA.md).
+--
+-- POR QUE NO SE EJECUTA MAS:
+--
+--   1) La linea del TRUNCATE de mas abajo borra tickets,
+--      interactions y orders con RESTART IDENTITY CASCADE.
+--      Correr este archivo DESTRUYE toda la evidencia medida.
+--
+--   2) Las filas de orders (ORD-HIST-*, ORD-LOAD-*), de
+--      interactions y de tickets que inserta este script son
+--      DATOS SINTETICOS. Fueron reportadas como resultados
+--      experimentales en el Cap. 5 de la tesis v5, y esa es la
+--      causa raiz del Bloque 1 de la auditoria academica.
+--      En la BD quedan marcadas con data_source = 'synthetic'.
+--
+-- QUE USAR EN SU LUGAR:
+--
+--   - Para reinicializar el catalogo (productos y FAQs), usar
+--     seed_catalogo.sql — mismo contenido, sin TRUNCATE y sin
+--     datos transaccionales.
+--
+--   - Para generar datos de orders/interactions/tickets, correr
+--     los experimentos de experiments/ (E1 y E2 del plan). Los
+--     datos los escriben los workflows de n8n, no un INSERT.
+--
+-- Se conserva unicamente como registro historico de que produjo
+-- los numeros del Cap. 5 de la v5.
+-- ############################################################
+
 -- ============================================================
 -- LIMPIAR FAQs DUPLICADAS (mantener solo ids 1-6)
 -- ============================================================
