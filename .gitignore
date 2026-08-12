@@ -26,6 +26,10 @@ backups/
 # borrá esta línea (ver protocolo engram).
 .engram/
 
+# --- Python (scripts de analisis de experimentos) ------------
+__pycache__/
+*.pyc
+
 # --- OS ------------------------------------------------------
 .DS_Store
 Thumbs.db
