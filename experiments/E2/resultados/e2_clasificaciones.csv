@@ -1,0 +1,151 @@
+id,user_id,mensaje,intent_humano,intent_modelo,acierto,dejo_fila
+1,5492610000001,hola,GENERAL,GENERAL,1,1
+2,5492610000002,me llego el producto equivocado,RECLAMO,RECLAMO,1,1
+3,5492610000003,hacen envios a todo el pais?,FAQ,FAQ,1,1
+4,5492610000004,buenas! queria saber cuando llega mi compra,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+5,5492610000005,cuanto tarda el envio? porque el mio ya lleva 8 dias,ESTADO_PEDIDO,FAQ,0,1
+6,5492610000006,puedo pagar en cuotas?,FAQ,FAQ,1,1
+7,5492610000007,hace 10 dias que espero y no llega nada,RECLAMO,RECLAMO,1,1
+8,5492610000008,donde esta mi pedido ORD-2024-0087?,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+9,5492610000009,gracias por todo,GENERAL,GENERAL,1,1
+10,5492610000010,cual es la politica de cambios?,FAQ,FAQ,1,1
+11,5492610000011,me cobraron dos veces la misma compra,RECLAMO,RECLAMO,1,1
+12,5492610000012,me pueden dar el numero de seguimiento?,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+13,5492610000013,tienen garantia los productos?,FAQ,FAQ,1,1
+14,5492610000014,buenas!,GENERAL,GENERAL,1,1
+15,5492610000015,el producto vino fallado,RECLAMO,RECLAMO,1,1
+16,5492610000016,mi orden ORD-1122 figura despachada pero no llego nada,RECLAMO,RECLAMO,1,1
+17,5492610000017,hacen factura A?,FAQ,FAQ,1,1
+18,5492610000018,quiero la devolucion de mi plata,RECLAMO,RECLAMO,1,1
+19,5492610000019,"che, el pedido que hice el martes ya salio?",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+20,5492610000020,cuanto sale el envio a cordoba?,FAQ,FAQ,1,1
+21,5492610000021,"hola, compre ayer y queria saber si me pueden hacer factura A",FAQ,FAQ,1,1
+22,5492610000022,"excelente atencion, gracias!",GENERAL,GENERAL,1,1
+23,5492610000023,nadie responde mi reclamo anterior,RECLAMO,RECLAMO,1,1
+24,5492610000024,quiero saber el estado de mi compra por favor,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+25,5492610000025,aceptan mercado pago?,FAQ,FAQ,1,1
+26,5492610000026,el monitor llego con la pantalla rota,RECLAMO,RECLAMO,1,1
+27,5492610000027,buen dia,GENERAL,GENERAL,1,1
+28,5492610000028,"tengo el pedido 4471, en que anda?",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+29,5492610000029,cuanto tarda el envio normalmente?,FAQ,FAQ,1,1
+30,5492610000030,"pague y me dicen que no hay stock, esto es una verguenza",RECLAMO,RECLAMO,1,1
+31,5492610000031,cuando me llega lo que compre ayer?,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+32,5492610000032,si no estoy en casa cuando llega el pedido que pasa?,FAQ,FAQ,1,1
+33,5492610000033,"hola, una consulta",GENERAL,GENERAL,1,1
+34,5492610000034,pedi talle L y me mandaron S,RECLAMO,RECLAMO,1,1
+35,5492610000035,"hola, hice una compra a nombre de Sordi, esta en camino?",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+36,5492610000036,hacen envios internacionales?,FAQ,FAQ,1,1
+37,5492610000037,es la tercera vez que escribo y nadie me contesta,RECLAMO,RECLAMO,1,1
+38,5492610000038,mi pedido no llega y ya pasaron los 5 dias que decia la web,RECLAMO,RECLAMO,1,1
+39,5492610000039,necesito saber si ya despacharon mi paquete,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+40,5492610000040,es seguro pagar con tarjeta en la web?,FAQ,FAQ,1,1
+41,5492610000041,quiero hablar con un supervisor,RECLAMO,GENERAL,0,1
+42,5492610000042,hola? hay alguien?,GENERAL,GENERAL,1,1
+43,5492610000043,seguimiento pedido ORD-9931,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+44,5492610000044,tienen local fisico para retirar?,FAQ,FAQ,1,1
+45,5492610000045,"me estafaron, no llego nada y ya pague",RECLAMO,RECLAMO,1,1
+46,5492610000046,"compre el lunes y todavia nada, esta todo bien?",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+47,5492610000047,cuantos dias tengo para devolver algo?,FAQ,FAQ,1,1
+48,5492610000048,ok gracias,GENERAL,GENERAL,1,1
+49,5492610000049,el paquete llego abierto y faltaban cosas,RECLAMO,RECLAMO,1,1
+50,5492610000050,me confirman que recibieron mi orden?,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+51,5492610000051,aceptan transferencia bancaria?,FAQ,FAQ,1,1
+52,5492610000052,"compre hace un mes y todavia no recibi nada, quiero mi reembolso",RECLAMO,RECLAMO,1,1
+53,5492610000053,"buenas tardes, consulta por el pedido 8823",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+54,5492610000054,los precios incluyen iva?,FAQ,FAQ,1,1
+55,5492610000055,"buenisimo, muchas gracias",GENERAL,GENERAL,1,1
+56,5492610000056,la garantia no me la quieren hacer valer,RECLAMO,RECLAMO,1,1
+57,5492610000057,donde anda mi paquete,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+58,5492610000058,hasta cuantas cuotas sin interes hay?,FAQ,FAQ,1,1
+59,5492610000059,me mandaron un producto usado,RECLAMO,RECLAMO,1,1
+60,5492610000060,quisiera saber si mi pedido ya salio de deposito,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+61,5492610000061,trabajan con oca o andreani?,FAQ,FAQ,1,1
+62,5492610000062,hola como andan,GENERAL,GENERAL,1,1
+63,5492610000063,cancele el pedido y me siguen cobrando,RECLAMO,RECLAMO,1,1
+64,5492610000064,el envio de la notebook en que estado esta?,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+65,5492610000065,puedo cambiar la direccion de envio despues de comprar?,FAQ,FAQ,1,1
+66,5492610000066,"pesimo servicio, nunca mas compro aca",RECLAMO,RECLAMO,1,1
+67,5492610000067,hola! me pueden decir si mi pedido esta demorado?,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+68,5492610000068,que metodos de pago aceptan?,FAQ,FAQ,1,1
+69,5492610000069,"queria cambiar un producto, cual es el procedimiento? me llego fallado",RECLAMO,RECLAMO,1,1
+70,5492610000070,el teclado dejo de andar a los 3 dias,RECLAMO,RECLAMO,1,1
+71,5492610000071,pedido ORD-5567 - estado?,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+72,5492610000072,la garantia la cubre la marca o ustedes?,FAQ,FAQ,1,1
+73,5492610000073,che,GENERAL,GENERAL,1,1
+74,5492610000074,me cobraron el envio que decia que era gratis,RECLAMO,RECLAMO,1,1
+75,5492610000075,sigo esperando el mail con el tracking,RECLAMO,ESTADO_PEDIDO,0,0
+76,5492610000076,hacen descuento por pago en efectivo?,FAQ,FAQ,1,1
+77,5492610000077,hace una semana que pedi la devolucion y no me contestan,RECLAMO,RECLAMO,1,1
+78,5492610000078,"mi orden aparece como confirmada, cuando la mandan?",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+79,5492610000079,cuanto cuesta el envio si compro mas de un producto?,FAQ,FAQ,1,1
+80,5492610000080,buenas tardes,GENERAL,GENERAL,1,1
+81,5492610000081,el producto no es como se ve en la foto,RECLAMO,RECLAMO,1,1
+82,5492610000082,hace cuanto salio mi envio?,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+83,5492610000083,puedo retirar por sucursal?,FAQ,FAQ,1,1
+84,5492610000084,"me llego incompleto el pedido, falta un item",RECLAMO,RECLAMO,1,1
+85,5492610000085,"buenas, numero de orden 3345, queria el estado",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+86,5492610000086,si el producto no me gusta lo puedo devolver?,FAQ,FAQ,1,1
+87,5492610000087,"gracias, muy amables",GENERAL,GENERAL,1,1
+88,5492610000088,quiero hacer un reclamo formal,RECLAMO,RECLAMO,1,1
+89,5492610000089,"me dijeron que llegaba hoy, se sabe algo?",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+90,5492610000090,tienen atencion telefonica?,FAQ,FAQ,1,1
+91,5492610000091,el repartidor nunca vino y figura como entregado,RECLAMO,RECLAMO,1,1
+92,5492610000092,"che consulta, el pedido de la silla gamer ya viene?",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+93,5492610000093,cual es el horario de atencion?,FAQ,FAQ,1,1
+94,5492610000094,"hola! gracias por la respuesta anterior, igual sigo sin saber donde esta mi pedido",RECLAMO,ESTADO_PEDIDO,0,0
+95,5492610000095,"me dieron mal la informacion, quiero una solucion ya",RECLAMO,RECLAMO,1,1
+96,5492610000096,quiero rastrear mi compra,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+97,5492610000097,emiten factura B?,FAQ,FAQ,1,1
+98,5492610000098,"dale, gracias",GENERAL,GENERAL,1,1
+99,5492610000099,voy a hacer la denuncia en defensa del consumidor,RECLAMO,RECLAMO,1,1
+100,5492610000100,"hola, tengo dos pedidos abiertos, me pasan el estado de ambos?",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+101,5492610000101,los envios son con seguro?,FAQ,FAQ,1,1
+102,5492610000102,me llego todo golpeado el paquete,RECLAMO,RECLAMO,1,1
+103,5492610000103,"compre con el mail lucia.perez@example.com, que paso con mi orden?",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+104,5492610000104,cuanto demora el reintegro de una devolucion?,FAQ,FAQ,1,1
+105,5492610000105,"hola, queria hacer una consulta",GENERAL,GENERAL,1,1
+106,5492610000106,pague en 12 cuotas y me cobraron en 1,RECLAMO,RECLAMO,1,1
+107,5492610000107,"buen dia, el pedido ORD-7788 sigue en preparacion?",ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+108,5492610000108,puedo comprar sin registrarme?,FAQ,FAQ,1,1
+109,5492610000109,tienen stock del PROD-013? porque lo pedi y me dijeron que no habia,FAQ,RECLAMO,0,1
+110,5492610000110,el producto vino sin los accesorios que decia,RECLAMO,RECLAMO,1,1
+111,5492610000111,alguna novedad de mi envio?,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+112,5492610000112,hacen envio gratis a partir de cierto monto?,FAQ,FAQ,1,1
+113,5492610000113,"perfecto, saludos",GENERAL,GENERAL,1,1
+114,5492610000114,"atencion pesima, llevo 40 minutos esperando respuesta",RECLAMO,RECLAMO,1,1
+115,5492610000115,mi pedido dice en transito hace 5 dias,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+116,5492610000116,venden productos usados o todos son nuevos?,FAQ,FAQ,1,1
+117,5492610000117,me quieren cobrar el envio de la devolucion cuando el error fue de ustedes,RECLAMO,RECLAMO,1,1
+118,5492610000118,queria confirmar si ya salio el despacho,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+119,5492610000119,si pago con transferencia cuando despachan?,FAQ,FAQ,1,1
+120,5492610000120,hola necesito ayuda,GENERAL,GENERAL,1,1
+121,5492610000121,me cancelaron el pedido sin avisarme,RECLAMO,RECLAMO,1,1
+122,5492610000122,hola necesito el estado del pedido urgente,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+123,5492610000123,tienen reembolso si el producto llega roto?,FAQ,FAQ,1,1
+124,5492610000124,"buenas, se puede cancelar un pedido ya pagado?",FAQ,FAQ,1,1
+125,5492610000125,ORD-2211,ESTADO_PEDIDO,ESTADO_PEDIDO,1,0
+126,5492610000126,puedo pedir que lo dejen con el portero?,FAQ,FAQ,1,1
+127,5492610000127,la factura vino con datos mal cargados,RECLAMO,RECLAMO,1,1
+128,5492610000128,me pueden ayudar?,GENERAL,GENERAL,1,1
+129,5492610000129,"me llego un mail que decia confirmado, eso significa que ya lo mandaron?",FAQ,FAQ,1,1
+130,5492610000130,aceptan tarjeta de debito?,FAQ,FAQ,1,1
+131,5492610000131,exijo que me devuelvan la plata hoy mismo,RECLAMO,RECLAMO,1,1
+132,5492610000132,"buenas, cuando estiman que llega el pedido a mendoza?",FAQ,FAQ,1,1
+133,5492610000133,hay stock del monitor samsung 24?,FAQ,FAQ,1,1
+134,5492610000134,buen finde!,GENERAL,GENERAL,1,1
+135,5492610000135,no entiendo nada de como funciona esto,FAQ,GENERAL,0,1
+136,5492610000136,"hola! el pedido que cancele ayer, se proceso la cancelacion?",ESTADO_PEDIDO,FAQ,0,1
+137,5492610000137,cuanto tiempo de garantia tienen las notebooks?,FAQ,FAQ,1,1
+138,5492610000138,sos un bot o una persona?,GENERAL,GENERAL,1,1
+139,5492610000139,hola queria saber si les llego mi transferencia,FAQ,FAQ,1,1
+140,5492610000140,queria saber si mi compra quedo registrada,FAQ,ESTADO_PEDIDO,0,0
+141,5492610000141,como se calcula el costo de envio?,FAQ,FAQ,1,1
+142,5492610000142,quien me esta respondiendo?,GENERAL,GENERAL,1,1
+143,5492610000143,me podrian pasar el telefono de atencion? necesito reclamar algo urgente,RECLAMO,GENERAL,0,1
+144,5492610000144,tengo el codigo de seguimiento pero no figura nada en la web del correo,ESTADO_PEDIDO,RECLAMO,0,1
+145,5492610000145,puedo pagar contra entrega?,FAQ,FAQ,1,1
+146,5492610000146,"nada, ya lo resolvi, gracias igual",GENERAL,GENERAL,1,1
+147,5492610000147,felices fiestas!,GENERAL,GENERAL,1,1
+148,5492610000148,como estan?,GENERAL,GENERAL,1,1
+149,5492610000149,hola buenas,GENERAL,GENERAL,1,1
+150,5492610000150,me llego el paquete pero adentro habia otra cosa,RECLAMO,RECLAMO,1,1

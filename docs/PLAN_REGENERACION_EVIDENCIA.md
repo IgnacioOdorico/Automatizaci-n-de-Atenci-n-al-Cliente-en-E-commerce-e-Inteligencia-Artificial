@@ -591,9 +591,42 @@ El plan §4.2 asumía dos anotadores (dos de los tres autores) y **κ de Cohen**
 
 **Separación entre autoría del corpus y etiquetado.** Si la misma persona redacta el mensaje y le pone la etiqueta, escribir el corpus **ya es etiquetarlo** y el ground truth sale inflado. Por eso el corpus lo redactó un asistente de IA a partir de los mensajes de `seed_expand.sql` más casos de frontera, **las intenciones previstas al redactarlo no se persistieron en ningún archivo** (no existe clave de respuestas), y el anotador no participó de la redacción. Que el redactor sea un LLM es una limitación a declarar: no contamina el ground truth —que es humano— pero puede sesgar la dificultad del corpus.
 
-**Estado de E2:** corpus de 150 congelado y commiteado (`e380553`) **antes** de etiquetar. Falta la ronda 1 (150) y la ronda 2 (50 de control).
+**Estado de E2:** corpus de 150 congelado y commiteado (`e380553`) **antes** de etiquetar. Ronda 1 ✅ (2026-08-11, commit `c015569`). Ronda 2 ✅ (2026-08-12) — con el hallazgo de §14.4.1.
 
 > **Control de validez antes de aceptar cualquier etiquetado** — quedó probado que hace falta: (1) mediana de segundos por mensaje (por debajo de ~3 s es sospechoso), (2) spot-check contra 10 casos evidentes del corpus, (3) distribución (si sale uniforme 25/25/25/25, revisar).
+>
+> ⚠️ **El criterio (1) es débil en las dos direcciones.** En la Ronda 1 la mediana dio 2,8 s y el script marcó "dudoso" — pero el etiquetado era válido (la varianza seguía a la dificultad: ratio 4:1 entre mensajes largos y cortos). En la Ronda 2 el κ dio 1,000 y todo chequeo automático habría dicho "PASA" — pero la medición estaba comprometida. **El criterio fuerte no es el reloj ni el κ: es que la varianza del tiempo caiga sobre los mensajes difíciles.**
+
+#### 14.4.1 Ronda 2 (test-retest): κ = 1,000, y por qué eso **no** valida el etiquetado
+
+Ejecutada el 2026-08-12 sobre 50 mensajes tomados al azar y en orden aleatorizado (`experiments/E2/etiquetas_ronda2.csv`).
+
+**Resultado nominal:** acuerdo 50/50 · Po = 1,000 · Pe = 0,263 · **κ = 1,000**.
+
+**Ese número no mide estabilidad de criterio: mide recuerdo.** La evidencia está en los tiempos de los mismos 50 mensajes en las dos rondas:
+
+| | Ronda 1 | Ronda 2 |
+|---|---|---|
+| media | 3,68 s | 3,75 s |
+| mediana | 2,75 s | 3,05 s |
+| máximo | 21,70 s | 15,30 s |
+
+- **Correlación de Pearson entre el tiempo de R1 y el de R2: r = −0,132.** Si el tiempo respondiera a la dificultad intrínseca del mensaje, tendría que ser claramente positivo: un mensaje ambiguo lo es hoy y también mañana.
+- Los 3 mensajes que en R1 costaron ≥ 8 s (media **15,4 s**) se resolvieron en R2 en **1,4 s** — el 9%.
+- El caso más difícil de todo el corpus, `#16` *"mi orden ORD-1122 figura despachada pero no llego nada"*: **21,7 s → 0,7 s (3%)**. `#5`: 10,8 s → 0,7 s. `#32`: 13,7 s → 2,7 s.
+- **El esfuerzo total no bajó** (medias casi idénticas): se redistribuyó. Los difíciles se volvieron instantáneos. Es la firma del reconocimiento, no del re-juicio.
+
+**Causa raíz — defecto de diseño de este plan, no del anotador.** §14.4 especificaba el retest *"idealmente al día siguiente"*. El estándar psicométrico para test-retest es de **2 a 4 semanas**, precisamente para derrotar el recuerdo. Con 24 h y 50 ítems memorables, κ = 1,00 era el resultado casi forzoso.
+
+**Descartado el fallo de instrumento:** se auditó `etiquetar.html`. `iniciar()` reinicia las etiquetas, `restaurar()` solo retoma una sesión inconclusa de la misma corrida y `mezclar()` es un Fisher-Yates correcto. **La herramienta nunca expuso las etiquetas de la Ronda 1.** La concordancia es genuina; lo que no es genuino es su interpretación como estabilidad de criterio.
+
+**Decisión (2026-08-12): se declara la limitación, no se rehace.** Rehacer el retest exigiría 2-3 semanas de calendario que el cronograma de entregas no admite. Se reporta el valor real acompañado de esta evidencia forense.
+
+**Redacción obligatoria en §5.2** (reemplaza y amplía el texto de §14.4):
+
+> El etiquetado del corpus fue realizado por un único anotador, por lo que se reporta concordancia intra-anotador (test-retest) en lugar del κ de Cohen inter-anotador. El retest sobre 50 mensajes arrojó una concordancia de κ = 1,000. **Este valor no debe interpretarse como estabilidad del criterio de anotación.** El intervalo entre rondas fue de 24 horas —muy por debajo de las 2 a 4 semanas recomendadas para un test-retest— y el análisis de los tiempos de anotación evidencia un efecto de recuerdo: la correlación entre el tiempo empleado en la primera y la segunda ronda es nula (r = −0,132), y los tres ítems que más esfuerzo demandaron en la primera ronda (15,4 s en promedio) se resolvieron en la segunda en 1,4 s. En consecuencia, este trabajo **no dispone de una medida válida de confiabilidad del etiquetado**, y así se declara como limitación.
+
+> **Por qué esto suma en lugar de restar:** el hallazgo A-04 reprochaba la ausencia de ground truth, no la ausencia de κ. El ground truth existe, está congelado por git antes de la ejecución y fue producido a ciegas. Declarar el límite de la métrica de confiabilidad —con la evidencia que lo demuestra— es más sólido que publicar un κ = 1,000 sin comentario, que ante un tribunal que ya detectó datos fabricados sería un número inverosímil.
 
 ### 14.5 Estado de los bloqueantes
 
@@ -609,12 +642,154 @@ El plan §4.2 asumía dos anotadores (dos de los tres autores) y **κ de Cohen**
 
 ### 14.6 Qué queda
 
-| # | Tarea | Depende de |
+*(actualizado al 2026-08-13 — los ítems 1 a 3 se cerraron el 2026-08-12, ver §14.7)*
+
+| # | Tarea | Estado |
 |---|---|---|
-| 1 | **Etiquetar el corpus de E2** — ronda 1 (150) + ronda 2 (50) | Trabajo humano, ~40 min + ~15 min |
-| 2 | Ejecutar E2 contra `/webhook/whatsapp` y conciliar (B-6.6) | Ronda 1 |
-| 3 | E3 — TMR por intent con `GROUP BY` | E2 |
-| 4 | E4 — baseline manual con cronómetro | Independiente, 1 h |
-| 5 | E5 — recaptura de figuras + control de hashes | E1-E4 cerrados |
-| 6 | E6 — paquete de reproducibilidad | Todo lo anterior |
-| 7 | Redacción — Bloques 2, 3 y 4 de la auditoría | Todo lo anterior |
+| 1 | **Etiquetar el corpus de E2** — ronda 1 (150) + ronda 2 (50) | ✅ §14.4.1 |
+| 2 | Ejecutar E2 contra `/webhook/whatsapp` y conciliar (B-6.6) | ✅ §14.7.2 — requirió D-7 |
+| 3 | E3 — TMR por intent con `GROUP BY` | ✅ §14.7.3 |
+| 4 | **E4 — baseline manual con cronómetro** | ⏳ **Independiente, 1 h. Es lo único que separa al Bloque 1 de estar completo.** |
+| 5 | E5 — recaptura de figuras + control de hashes | ⏳ requiere E1-E4 cerrados |
+| 6 | E6 — paquete de reproducibilidad | ⏳ **bloqueado por la deuda D-8 de §14.7.5** |
+| 7 | Redacción — Bloques 2, 3 y 4 de la auditoría | ⏳ todo lo anterior |
+
+---
+
+## 14.7 D-7 — el defecto sistémico de la rama `ESTADO_PEDIDO`, y el cierre de E2 y E3 (2026-08-12)
+
+#### 14.7.1 La corrida 1 respondió 150/150 y perdió 35 mensajes en silencio
+
+La primera ejecución del corpus contra `/webhook/whatsapp` (2026-08-12, 11:09) devolvió **150/150 HTTP 200**. En `interactions` había **115 filas**. Faltaban 35.
+
+**La distribución de los faltantes es la prueba causal, y no admite otra lectura:**
+
+| Agrupados por | Faltantes |
+|---|---|
+| Intent **humano** (ground truth) | ESTADO_PEDIDO 32 · RECLAMO 2 · FAQ 1 |
+| Intent **del modelo** (la ruta que el mensaje tomó de verdad) | **ESTADO_PEDIDO 35 — el 100%** |
+
+Agrupado por ground truth el patrón se ve borroso; agrupado por la clasificación del modelo es **exacto**: se perdió todo lo que entró a la rama `ESTADO_PEDIDO` y **solo** eso. El defecto no depende del contenido del mensaje sino del camino que el orquestador le asigna.
+
+**Mecanismo.** El nodo Postgres `Buscar Pedido` devolvía **0 ítems** cuando el `order_id` que el LLM extrajo no existía en `orders`. En n8n, un nodo que emite 0 ítems no propaga nada: **todo el subgrafo descendente sencillamente no se ejecuta.** Sin fila en `interactions`, sin respuesta al cliente — y la ejecución cerrando en `status = 'success'`.
+
+> **El guard ya estaba escrito, y era inalcanzable.** `Preparar Respuesta Pedido` contiene `if (pedidos.length === 0) → "No encontré un pedido con ese número"`. Es **código muerto por construcción**: n8n nunca llega a invocar el nodo que lo contiene.
+
+**Lección de arquitectura — va al Cap. 5 como aporte propio:** en un orquestador de dataflow, la programación defensiva *dentro* del nodo es insuficiente. El nodo solo corre si algo le llega. **El guard tiene que vivir a nivel del dataflow**, garantizando que el paso anterior emita siempre al menos un ítem.
+
+**El arreglo (aplicado por el usuario en la UI de n8n).** Se reescribió la query para que parta de una fila sintética y traiga el pedido por `LEFT JOIN`:
+
+```sql
+FROM (SELECT '{{ $json.order_id }}'::varchar AS oid) q
+LEFT JOIN orders o ON o.order_number = q.oid
+```
+
+Siempre devuelve **exactamente 1 fila**. Cuando el pedido no existe, los campos vienen en `NULL` y el fallback ya escrito se activa solo. **No se agregó lógica nueva: se hizo alcanzable la que ya estaba.**
+
+> ⚠️ **La trampa que costó 4 intentos — vale documentarla.** n8n ejecuta la definición registrada **al activar** el workflow, no la última guardada. No surtieron efecto ni `alwaysOutputData` ni `docker restart tesis_n8n`; solo el apagar/prender del switch **Active** republica la definición. **Verificar siempre contra `execution_data.workflowData`, nunca contra `workflow_entity`.**
+
+**La corrida 1 no se tiró.** El accuracy se recuperó deserializando `execution_data` (formato `flatted` de n8n) → `experiments/E2/resultados/e2_clasificaciones.csv`, 150 filas. Sirve como réplica independiente.
+
+#### 14.7.2 E2 — resultados definitivos (corrida 2, sistema corregido) ✅
+
+Ejecutada el 2026-08-12 20:45 sobre el sistema con D-7 aplicado. **150/150 filas escritas, 0 faltantes, 0 duplicados.**
+
+| | Corrida 1 (con el defecto) | **Corrida 2 (definitiva)** |
+|---|---|---|
+| Filas en `interactions` | 115 / 150 | **150 / 150** |
+| Aciertos | 140 / 150 | **139 / 150** |
+| **Accuracy** | 93,3 % | **92,7 %** |
+| IC 95 % (Wilson) | [88,2 % ; 96,3 %] | **[87,3 % ; 95,9 %]** |
+| p (binomial exacta, H₀: p = 0,85) | 0,0014 | **0,0034** |
+
+**El resultado primario del trabajo es la corrida 2**: es la única medida sobre el sistema que efectivamente responde a los 150 mensajes.
+
+> **H2b queda sostenida con datos medidos.** Se rechaza H₀ (p = 0,0034 < 0,05): la exactitud del clasificador es significativamente superior al 85 % fijado como criterio. Hasta esta corrida, H2b se apoyaba en filas de `seed_expand.sql`.
+
+**Estabilidad del clasificador entre corridas: 145/150 = 96,7 %** de coincidencia sobre el mismo mensaje. Es **la primera medida de no-determinismo del modelo** que tiene el trabajo, y conviene reportarla: GPT-4o-mini no devuelve la misma etiqueta el 3,3 % de las veces, aun a temperatura fija.
+
+**Matriz de confusión** (fila = ground truth humano, columna = clasificación del modelo):
+
+| | ESTADO_PEDIDO | FAQ | GENERAL | RECLAMO | **n** |
+|---|---|---|---|---|---|
+| **ESTADO_PEDIDO** | **32** | 1 | 1 | 1 | 35 |
+| **FAQ** | 1 | **44** | 2 | 1 | 48 |
+| **GENERAL** | 0 | 0 | **25** | 0 | 25 |
+| **RECLAMO** | 3 | 0 | 1 | **38** | 42 |
+
+| Clase | Precisión | Recall | F1 |
+|---|---|---|---|
+| ESTADO_PEDIDO | 0,889 | 0,914 | 0,901 |
+| FAQ | 0,978 | 0,917 | 0,946 |
+| GENERAL | 0,862 | **1,000** | 0,926 |
+| RECLAMO | 0,950 | 0,905 | 0,927 |
+
+**Los 11 errores no son ruido: son mensajes genuinamente ambiguos.** La frontera `RECLAMO` / `ESTADO_PEDIDO` concentra 4 de los 11 — un cliente que reclama por una demora está, literalmente, preguntando por el estado de su pedido:
+
+| # | Humano | Modelo | Mensaje |
+|---|---|---|---|
+| 5 | ESTADO_PEDIDO | FAQ | *cuanto tarda el envio? porque el mio ya lleva 8 dias* |
+| 16 | RECLAMO | ESTADO_PEDIDO | *mi orden ORD-1122 figura despachada pero no llego nada* |
+| 41 | RECLAMO | GENERAL | *quiero hablar con un supervisor* |
+| 75 | RECLAMO | ESTADO_PEDIDO | *sigo esperando el mail con el tracking* |
+| 94 | RECLAMO | ESTADO_PEDIDO | *sigo sin saber donde esta mi pedido* |
+| 109 | FAQ | RECLAMO | *tienen stock del PROD-013? porque lo pedi y me dijeron que no habia* |
+| 133 | FAQ | GENERAL | *hay stock del monitor samsung 24?* |
+| 135 | FAQ | GENERAL | *no entiendo nada de como funciona esto* |
+| 136 | ESTADO_PEDIDO | RECLAMO | *el pedido que cancele ayer, se proceso la cancelacion?* |
+| 140 | FAQ | ESTADO_PEDIDO | *queria saber si mi compra quedo registrada* |
+| 144 | ESTADO_PEDIDO | GENERAL | *tengo el codigo de seguimiento pero no figura nada en la web del correo* |
+
+> **Redacción sugerida para §5.2:** el análisis cualitativo de los 11 errores muestra que ninguno corresponde a una clasificación arbitraria: 4 de 11 se concentran en la frontera semántica entre `RECLAMO` y `ESTADO_PEDIDO`, categorías que no son disjuntas en el lenguaje real del cliente. **Esto es una limitación del esquema de intenciones de cuatro clases, no del clasificador**, y sugiere que un esquema con etiquetas múltiples o una categoría `RECLAMO_POR_DEMORA` reduciría el error residual.
+
+#### 14.7.3 E3 — TMR por intent ✅ **(cierra A-05)**
+
+Sobre las 150 interacciones de la corrida 2, con `data_source = 'measured'`. Segundos.
+
+**Agrupado por ground truth humano:**
+
+| Intent | n | media | mediana | desvío | mín | máx | p95 |
+|---|---|---|---|---|---|---|---|
+| ESTADO_PEDIDO | 35 | 1,474 | 1,428 | 0,179 | 1,216 | 1,906 | 1,782 |
+| FAQ | 48 | 1,542 | 1,439 | 0,325 | 1,189 | 2,915 | 1,973 |
+| GENERAL | 25 | 1,244 | 1,197 | 0,160 | 1,041 | 1,676 | 1,555 |
+| RECLAMO | 42 | 1,516 | 1,495 | 0,133 | 1,311 | 1,876 | 1,794 |
+| **GLOBAL** | **150** | **1,469** | **1,435** | **0,246** | **1,041** | **2,915** | **1,906** |
+
+**Agrupado por la ruta realmente tomada** (clasificación del modelo) — es la agrupación mecánicamente correcta, porque es la que determina qué nodos se ejecutan:
+
+| Intent (ruta) | n | media |
+|---|---|---|
+| ESTADO_PEDIDO | 36 | 1,446 |
+| FAQ | 45 | 1,544 |
+| GENERAL | 29 | 1,281 |
+| RECLAMO | 40 | 1,543 |
+
+Las dos agrupaciones coinciden en el global (1,469 s) y en el orden de magnitud. **`GENERAL` es sistemáticamente la más rápida** por ambos criterios: es la única rama que no toca la base de datos.
+
+> ⚠️ **El TMR no es estable entre corridas y hay que decirlo.** Las mismas clases dieron ~2,1-2,5 s en la corrida 1 contra ~1,3-1,5 s en la corrida 2: **una diferencia cercana al 40 %, dominada por la latencia de la API de OpenAI, no por el pipeline.** Reportar un TMR único sin declarar esta varianza entre corridas es frágil ante el tribunal. Esto además **invalida la estimación de B-6.7**, que se hizo con n = 9.
+
+#### 14.7.4 Hallazgos propios acumulados — el material que lleva la nota de 8 a 9
+
+Ninguno de estos estaba en los 39 hallazgos del auditor. Son defectos reales que el equipo encontró midiendo su propio sistema, y **es lo que distingue un trabajo corregido de un trabajo con criterio propio**:
+
+| # | Hallazgo | Dónde |
+|---|---|---|
+| 1 | **49 de 120 órdenes huérfanas** bajo concurrencia, con la ejecución en `error` pero sin rastro en el dominio | §14.3 |
+| 2 | **D-7 — 35 mensajes perdidos** en la rama `ESTADO_PEDIDO`, con la ejecución en `success` | §14.7.1 |
+| 3 | **El κ = 1,000 mide recuerdo, no criterio** — demostrado con la correlación de tiempos (r = −0,132) | §14.4.1 |
+| 4 | **Inyección SQL** en `Buscar Pedido`: `WHERE o.order_number = '{{ $json.order_id }}'` interpola sin parametrizar un valor que viene del mensaje del usuario **a través del LLM** | §14.7.5 |
+| 5 | **No-determinismo del clasificador**: 3,3 % de etiquetas distintas sobre el mismo mensaje | §14.7.2 |
+
+> **El patrón que une a los hallazgos 1 y 2, y que es la contribución conceptual del trabajo:** en ambos casos **el fallo es invisible para la instrumentación del orquestador**. Una vez la ejecución quedó en `error` sin que el dominio lo registrara; la otra quedó en `success` sin haber hecho nada. **En una arquitectura orquestada de bajo código, el estado de la ejecución no es un indicador confiable del estado del negocio.** Monitorear n8n no alcanza: hay que reconciliar contra la base de datos. Esto se sostiene como aporte propio en el Cap. 5 y en las conclusiones.
+
+#### 14.7.5 Deuda abierta detectada
+
+| ID | Deuda | Severidad |
+|---|---|---|
+| **D-8** | **Los JSON de `workflows/` NO tienen el arreglo D-7.** Ambos (`Flujo 2 — Chatbot Omnicanal IA.json:223` y el `PRODUCCION.json:208`) siguen con la query vieja `FROM orders o … WHERE o.order_number = '…'`. El arreglo vive **solo dentro de la instancia de n8n**. Quien importe el repo reproduce **el sistema roto**, no el sistema medido. | **Bloquea E6** |
+| D-9 | **Inyección SQL** en `Buscar Pedido` (hallazgo propio n.º 4). No se tocó durante la medición para no mover dos variables a la vez. Corresponde arreglarlo y declararlo. | Alta |
+| D-10 | `interactions` **conserva las 107 filas seed** de junio (`data_source = 'synthetic'`): el truncate de D-1 limpió `orders` pero no ésta. **Toda query del Cap. 5 sobre `interactions` debe filtrar `data_source = 'measured'`.** Verificado: 0 colisiones de `user_id` con el corpus. | Media |
+| D-11 | `run_flujo2_corpus.ps1`: la conciliación no filtra por fecha (con dos corridas informó *"265 escritas, 0 faltantes"*) y `Get-FileHash` no está disponible en esa consola → exit code 1 y el manifiesto no se genera. | Media |
+
+**Pendiente de recálculo:** el factor de mejora de §5.4, con el TMR real (1,469 s) y el denominador que salga de E4.
