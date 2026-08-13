@@ -1,0 +1,70 @@
+============================================================
+ E4 — PLANTILLA FIJA DE CORREO
+ Decisión D-E4-1 (2026-08-13): el operador NO redacta desde
+ cero. Copia esta plantilla y completa los campos {entre
+ llaves}. Es el supuesto conservador — ver README §Diseño.
+
+ Los campos son los mismos que el Flujo 1 inserta en su
+ email HTML (nodos "Enviar Email Confirmación" y "Enviar
+ Email Sin Stock"), para que la tarea manual y la
+ automatizada sean equivalentes y no sólo parecidas.
+============================================================
+
+
+------------------------------------------------------------
+ A) HAY STOCK  →  confirmación
+------------------------------------------------------------
+Para:    {email}
+Asunto:  Confirmación de Orden {orden}
+
+Hola {nombre},
+
+Tu orden fue confirmada exitosamente. Estos son los detalles:
+
+  Número de orden: {orden}
+  Producto:        {producto}
+  Cantidad:        {cantidad}
+  Total:           ${total}
+
+Te avisamos por este medio cuando el pedido sea despachado.
+
+¡Gracias por tu compra!
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+
+
+------------------------------------------------------------
+ B) NO HAY STOCK  →  aviso
+------------------------------------------------------------
+Para:    {email}
+Asunto:  Orden {orden} - Producto sin stock
+
+Hola {nombre},
+
+Lamentamos informarte que el producto solicitado no tiene
+stock disponible en este momento.
+
+  Número de orden: {orden}
+  Producto:        {producto}
+  Cantidad pedida: {cantidad}
+
+Te contactaremos apenas se reponga. Si preferís cancelar la
+orden o elegir otro producto, respondé este correo.
+
+Disculpá las molestias.
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+
+
+============================================================
+ CAMPOS A COMPLETAR: 5
+   {email}  {orden}  {nombre}  {producto}  {cantidad}  {total}
+   (en la variante B no va {total})
+
+ El cronómetro ya te muestra estos datos por orden. No hace
+ falta que los busques de nuevo en la base.
+============================================================

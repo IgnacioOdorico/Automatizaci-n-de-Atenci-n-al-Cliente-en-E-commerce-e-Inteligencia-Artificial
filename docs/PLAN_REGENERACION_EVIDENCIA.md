@@ -793,3 +793,60 @@ Ninguno de estos estaba en los 39 hallazgos del auditor. Son defectos reales que
 | D-11 | `run_flujo2_corpus.ps1`: la conciliación no filtra por fecha (con dos corridas informó *"265 escritas, 0 faltantes"*) y `Get-FileHash` no está disponible en esa consola → exit code 1 y el manifiesto no se genera. | Media |
 
 **Pendiente de recálculo:** el factor de mejora de §5.4, con el TMR real (1,469 s) y el denominador que salga de E4.
+
+---
+
+## 14.8 E4 — protocolo e instrumental (2026-08-13)
+
+Instrumental construido y probado. Ver `experiments/E4/README.md`. **Falta ejecutar la medición** (una hora de trabajo humano).
+
+### Las dos decisiones que definen el denominador
+
+§6 dejaba el protocolo abierto en dos puntos que **cambian el número resultante**. Ambos se resolvieron eligiendo el escenario que **menos favorece a la hipótesis**: si el sistema gana igual, el resultado no es discutible.
+
+| ID | Decisión | Resuelto | Efecto sobre el resultado |
+|---|---|---|---|
+| **D-E4-1** | Redacción del correo | **Plantilla fija + completar 5 campos** (`plantilla_email.txt`, campos calcados de los nodos `Enviar Email Confirmación` / `Sin Stock` del Flujo 1) | **Conservador.** Modela una PyME con proceso mínimo, no una sin ninguno. Baja el denominador y por lo tanto baja el factor. La alternativa —redactar desde cero— lo inflaba y era atacable. |
+| **D-E4-2** | Alcance del cronómetro | **Solo procesamiento**, desde que el operador ve la orden hasta que termina el correo. La latencia de detección va **aparte**, como supuesto declarado con su impacto calculado. | **Conservador.** Medir la espera exigiría elegir nosotros cada cuánto revisa la bandeja el operador — que es exactamente el defecto de C-09 que estamos corrigiendo. |
+
+> **Regla que ordena todo E4: lo medido y lo supuesto no se mezclan nunca en la misma cifra.** Ese fue el mecanismo del hallazgo C-08.
+
+### Diseño
+
+- **n = 12**, de las cuales **las 2 primeras son de familiarización**: se reportan por separado, **no se descartan**. Mismo criterio con que E1 trató el *cold start* (§14.2). El resultado primario sale de las 10 restantes — la n que pedía §6.
+- **Tres fases cronometradas por orden**: T1 lectura y verificación de stock · T2 actualización en la base · T3 redacción del correo. El desglose muestra *dónde* se va el tiempo manual, que es material de análisis y no sólo un número.
+- **9 con stock / 3 sin stock** (75/25), próxima a la distribución real de E1.a (70/30). Las dos ramas cuestan trabajo distinto y el E2E automatizado promedia las dos.
+- El operador trabaja contra **la misma base y el mismo catálogo** que el pipeline. La comparación es tarea por tarea, no aproximada.
+
+### Dos trampas que el instrumental resuelve
+
+1. **Contaminación de E1.** Las 12 órdenes viven en la misma tabla `orders` y llevan `processed_at`/`notified_at` a escala humana. Si entran a las queries de E1, destruyen el MTTD y el MTTR. Se marcan con **`data_source = 'e4_manual'`**, distinto de `'measured'` (E1/E2) y de `'synthetic'` (seed). **Toda query de E1 en el Cap. 5 debe filtrar `data_source = 'measured'`** — misma disciplina que exige D-10 sobre `interactions`.
+2. **Fuga del resultado de T1.** La salida de `preparar_e4.sql` **no muestra el stock ni la rama** de cada orden, deliberadamente. Averiguar si hay stock *es* el trabajo que T1 mide; si el operador lo sabe antes de arrancar el reloj, T1 queda subestimada.
+
+### ⚠️ El factor va a dar un número enorme, y no puede ir de titular
+
+Con un baseline manual de 2 a 5 minutos contra los **0,063 s** de E1.a, el factor cae en el orden de **2.000x a 5.000x**.
+
+**El numerador está artificialmente bajo:** los 0,063 s son de un pipeline local, con Mailpit en lugar de un SMTP real, sin APIs externas y sin red. **El factor medido es una cota superior, no el factor real.** Y encima del problema metodológico hay uno de credibilidad: la tesis ya fue observada por declarar 190x cuando correspondía 31,6x (C-08). Volver ante el mismo tribunal con un titular de "3.000x" es pedir que lo revisen con lupa.
+
+**Orden obligatorio de reporte en §5.4:**
+
+1. **Primero, la afirmación falsable de H1: "menos de 30 segundos".** Medido: 0,063 s, con margen de ~476x contra el umbral que el propio trabajo se fijó. **Ésta es la contrastación de la hipótesis, y no depende del baseline manual.**
+2. **Después, el factor contra el baseline medido**, acompañado *en la misma oración* de la limitación del entorno de laboratorio.
+3. **Aparte y rotulada como escenario**, la latencia de detección — nunca sumada dentro del número medido.
+
+### Un resultado posible que conviene anticipar
+
+Si el baseline medido cae **por debajo de los 5 minutos**, entonces el rango "5 a 30 minutos" que el Capítulo 1 declara sin fuente estaba **sobreestimado**, y la medición propia **corrige a la baja el resultado más vistoso del trabajo**. `analizar_e4.py` chequea esto automáticamente.
+
+> **Eso no es un problema: es el mejor argumento que E4 puede aportar a la defensa.** Un equipo que mide su propio baseline y publica un número que lo perjudica es un equipo creíble — y es lo contrario exacto de lo que la auditoría encontró en la v5.
+
+### Archivos
+
+| Archivo | Qué es |
+|---|---|
+| `experiments/E4/README.md` | Protocolo completo y reglas de la medición |
+| `experiments/E4/preparar_e4.sql` | Crea las 12 órdenes. Idempotente, con guardas |
+| `experiments/E4/plantilla_email.txt` | La plantilla fija de D-E4-1 |
+| `experiments/E4/cronometro.html` | Instrumento de medición. Autónomo, con reanudación |
+| `experiments/E4/analizar_e4.py` | Estadísticos por fase, IC por t de Student, factor con sus reservas |

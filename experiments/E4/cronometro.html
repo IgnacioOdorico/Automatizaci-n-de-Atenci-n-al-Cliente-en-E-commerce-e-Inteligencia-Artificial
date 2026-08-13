@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E4 — Cronómetro de atención manual</title>
+<style>
+  :root{
+    --tinta:#1a1a1a; --suave:#666; --linea:#d8d8d8; --fondo:#f7f7f5;
+    --papel:#fff; --acento:#1c5d99; --ok:#2e7d32; --alerta:#c62828; --aviso:#b26a00;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:24px 16px 64px; background:var(--fondo); color:var(--tinta);
+    font:16px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  }
+  .caja{max-width:920px; margin:0 auto}
+  .panel{background:var(--papel); border:1px solid var(--linea); border-radius:10px; padding:24px; margin-bottom:18px}
+  h1{font-size:22px; margin:0 0 4px}
+  h2{font-size:17px; margin:0 0 12px}
+  .sub{color:var(--suave); font-size:14px; margin:0 0 20px}
+  code,pre{font-family:ui-monospace,Consolas,Monaco,monospace}
+  pre{
+    background:#282c34; color:#e6e6e6; padding:12px 14px; border-radius:7px;
+    font-size:13px; line-height:1.5; overflow-x:auto; margin:8px 0; white-space:pre; user-select:all;
+  }
+  pre .v{color:#8fd18f}
+  table{width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:15px}
+  td{padding:7px 10px; border-bottom:1px solid #eee}
+  td:first-child{color:var(--suave); width:150px}
+  td.dato{font-weight:600}
+  button{
+    font:inherit; font-weight:600; padding:11px 20px; border-radius:7px; cursor:pointer;
+    border:1px solid var(--linea); background:#fff; color:var(--tinta);
+  }
+  button:hover{background:#f0f0ee}
+  button.pri{background:var(--acento); border-color:var(--acento); color:#fff}
+  button.pri:hover{filter:brightness(1.12)}
+  button.ok{background:var(--ok); border-color:var(--ok); color:#fff}
+  button.ok:hover{filter:brightness(1.12)}
+  button.no{background:var(--alerta); border-color:var(--alerta); color:#fff}
+  button.no:hover{filter:brightness(1.12)}
+  button.fantasma{color:var(--suave); font-weight:400; padding:8px 14px; font-size:14px}
+  .reloj{
+    font-family:ui-monospace,Consolas,monospace; font-size:44px; font-weight:700;
+    letter-spacing:1px; text-align:center; margin:6px 0 2px;
+  }
+  .reloj-pie{text-align:center; color:var(--suave); font-size:13px; margin-bottom:20px}
+  .parciales{display:flex; gap:8px; justify-content:center; margin-bottom:22px; flex-wrap:wrap}
+  .chip{
+    background:#f0f0ee; border:1px solid var(--linea); border-radius:20px;
+    padding:4px 13px; font-size:13px; color:var(--suave);
+  }
+  .chip b{color:var(--tinta); font-family:ui-monospace,Consolas,monospace}
+  .chip.viva{background:#e8f0f8; border-color:var(--acento); color:var(--acento)}
+  .barra{height:6px; background:#eaeae8; border-radius:3px; overflow:hidden; margin:0 0 18px}
+  .barra i{display:block; height:100%; background:var(--acento); transition:width .25s}
+  .cab{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px}
+  .cab .n{font-size:14px; color:var(--suave)}
+  .tag{
+    display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:.4px;
+    padding:3px 9px; border-radius:4px; text-transform:uppercase; vertical-align:2px;
+  }
+  .tag.fam{background:#fdf0d8; color:var(--aviso)}
+  .fase{border-left:3px solid var(--acento); padding-left:16px; margin:18px 0}
+  .fase h2{color:var(--acento)}
+  .nota{background:#fdf8e8; border:1px solid #e8dcae; border-radius:7px; padding:12px 15px; font-size:14.5px; margin:14px 0}
+  .nota.roja{background:#fdeaea; border-color:#e8b4b4}
+  textarea{
+    width:100%; min-height:250px; padding:13px; border:1px solid var(--linea); border-radius:7px;
+    font-family:ui-monospace,Consolas,monospace; font-size:13.5px; line-height:1.55; resize:vertical;
+  }
+  textarea:focus{outline:2px solid var(--acento); outline-offset:-1px}
+  .acciones{display:flex; gap:10px; align-items:center; margin-top:18px; flex-wrap:wrap}
+  .crece{flex:1}
+  ul{margin:10px 0; padding-left:22px}
+  li{margin:7px 0}
+  .oculto{display:none}
+  .resu{font-size:15px}
+  .resu td:first-child{width:auto}
+</style>
+</head>
+<body>
+<div class="caja">
+
+<!-- ========== PANTALLA 0 — INTRO ========== -->
+<div id="p-intro" class="panel">
+  <h1>E4 — Baseline de atención manual</h1>
+  <p class="sub">Cronómetro del procesamiento manual de órdenes · TFI UTN FRM</p>
+
+  <p>Vas a procesar <strong>12 órdenes a mano</strong>, contra la misma base que usa el Flujo 1. El cronómetro mide tres fases por orden: <strong>lectura y verificación</strong>, <strong>actualización</strong> y <strong>redacción del correo</strong>.</p>
+
+  <div class="nota">
+    <strong>Antes de arrancar, dejá abierta una consola de psql al lado:</strong>
+    <pre>docker exec -it tesis_postgres psql -U n8n_user -d ecommerce_tesis</pre>
+    Y asegurate de haber corrido <code>preparar_e4.sql</code>.
+  </div>
+
+  <h2>Reglas de la medición</h2>
+  <ul>
+    <li><strong>Ritmo normal de trabajo.</strong> Ni apurado ni distraído. Un baseline apurado es tan falso como uno inflado.</li>
+    <li><strong>No preparés nada de antemano.</strong> Nada de tener las consultas ya escritas en el portapapeles.</li>
+    <li><strong>Si te interrumpen, descartá esa orden</strong> con el botón <em>Descartar</em>. Queda registrada como descartada y no entra al promedio.</li>
+    <li><strong>Las 2 primeras son de familiarización.</strong> Se reportan aparte, no se descartan. Tomátelas con calma: sirven igual.</li>
+    <li>El reloj de cada orden arranca cuando apretás <em>Iniciar</em>. Entre orden y orden podés parar sin ensuciar la medición.</li>
+  </ul>
+
+  <div class="acciones">
+    <button class="pri" onclick="empezar()">Iniciar la medición</button>
+    <button id="btn-retomar" class="oculto" onclick="retomar()">Retomar sesión anterior</button>
+  </div>
+</div>
+
+<!-- ========== PANTALLA 1 — MEDICIÓN ========== -->
+<div id="p-medir" class="panel oculto">
+  <div class="barra"><i id="barra" style="width:0"></i></div>
+  <div class="cab">
+    <h1 id="titulo">Orden 1 de 12</h1>
+    <span class="n" id="restantes"></span>
+  </div>
+
+  <table>
+    <tr><td>Orden</td><td class="dato" id="d-orden"></td></tr>
+    <tr><td>Cliente</td><td class="dato" id="d-nombre"></td></tr>
+    <tr><td>Email</td><td class="dato" id="d-email"></td></tr>
+    <tr><td>Producto</td><td class="dato" id="d-producto"></td></tr>
+    <tr><td>Cantidad</td><td class="dato" id="d-cantidad"></td></tr>
+    <tr><td>Total</td><td class="dato" id="d-total"></td></tr>
+  </table>
+
+  <div class="reloj" id="reloj">0,0 s</div>
+  <div class="reloj-pie" id="reloj-pie">detenido</div>
+  <div class="parciales">
+    <span class="chip" id="c1">T1 lectura <b>—</b></span>
+    <span class="chip" id="c2">T2 actualización <b>—</b></span>
+    <span class="chip" id="c3">T3 redacción <b>—</b></span>
+  </div>
+
+  <!-- FASE: esperando iniciar -->
+  <div id="f-listo" class="fase">
+    <h2>Listo para arrancar</h2>
+    <p>Cuando aprietes <em>Iniciar</em> empieza a correr <strong>T1</strong>. Recién ahí mirá la orden.</p>
+    <div class="acciones"><button class="pri" onclick="iniciarOrden()">Iniciar orden</button></div>
+  </div>
+
+  <!-- FASE T1 -->
+  <div id="f-t1" class="fase oculto">
+    <h2>T1 — Lectura y verificación de stock</h2>
+    <p>Leé la orden de arriba y averiguá en la base si hay stock suficiente.</p>
+    <pre id="q1"></pre>
+    <div class="acciones">
+      <button class="pri" onclick="finT1()">Ya sé si hay stock &rarr; T2</button>
+      <span class="crece"></span>
+      <button class="fantasma" onclick="descartar()">Descartar orden</button>
+    </div>
+  </div>
+
+  <!-- FASE T2 -->
+  <div id="f-t2" class="fase oculto">
+    <h2>T2 — Actualización en la base</h2>
+    <p>Elegí la rama que corresponde y corré las sentencias. El botón que apretás <strong>registra la rama</strong>.</p>
+
+    <div id="rama-elegir">
+      <div class="acciones">
+        <button class="ok" onclick="elegirRama('con_stock')">Hay stock &rarr; confirmar</button>
+        <button class="no" onclick="elegirRama('sin_stock')">No hay stock &rarr; avisar</button>
+      </div>
+    </div>
+
+    <div id="rama-hecha" class="oculto">
+      <pre id="q2"></pre>
+      <div class="acciones">
+        <button class="pri" onclick="finT2()">Base actualizada &rarr; T3</button>
+        <span class="crece"></span>
+        <button class="fantasma" onclick="descartar()">Descartar orden</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE T3 -->
+  <div id="f-t3" class="fase oculto">
+    <h2>T3 — Redacción del correo</h2>
+    <p>Completá la plantilla con los datos del cliente. <strong>Escribila de verdad</strong>: el texto queda como evidencia de que el trabajo se hizo.</p>
+    <textarea id="mail" spellcheck="false"></textarea>
+    <div class="nota" id="nota-t3"></div>
+    <div class="acciones">
+      <button class="pri" onclick="finT3()">Correo listo &rarr; siguiente orden</button>
+      <span class="crece"></span>
+      <button class="fantasma" onclick="descartar()">Descartar orden</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PANTALLA 2 — FIN ========== -->
+<div id="p-fin" class="panel oculto">
+  <h1>Medición terminada</h1>
+  <p class="sub">Descargá el CSV y guardalo en <code>experiments/E4/resultados/</code></p>
+  <table class="resu" id="resumen"></table>
+  <div class="nota">
+    El CSV crudo se commitea <strong>sin editar</strong>. Después corré:
+    <pre>python experiments\E4\analizar_e4.py experiments\E4\resultados\&lt;archivo&gt;.csv</pre>
+  </div>
+  <div class="acciones">
+    <button class="pri" onclick="bajarCSV()">Descargar CSV</button>
+    <span class="crece"></span>
+    <button class="fantasma" onclick="borrarTodo()">Borrar y empezar de nuevo</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+'use strict';
+
+/* ============================================================
+   Las 12 órdenes. Espejo exacto de preparar_e4.sql.
+   'total' es referencial (precios de init_simple.sql); el dato
+   autoritativo es el que devuelve la consulta T1.
+   ============================================================ */
+const ORDENES = [
+  {orden:'ORD-E4-001', nombre:'Lucia Bertolotti',  email:'lucia.bertolotti@example.com',  sku:'PROD-002', producto:'Mouse Inalámbrico Logitech',     cantidad:1,   total:'29.99'},
+  {orden:'ORD-E4-002', nombre:'Martin Quiroga',    email:'martin.quiroga@example.com',    sku:'PROD-007', producto:'SSD Kingston 480GB',              cantidad:2,   total:'89.98'},
+  {orden:'ORD-E4-003', nombre:'Sofia Nardelli',    email:'sofia.nardelli@example.com',    sku:'PROD-003', producto:'Teclado Mecánico Redragon',       cantidad:1,   total:'79.99'},
+  {orden:'ORD-E4-004', nombre:'Emiliano Paz',      email:'emiliano.paz@example.com',      sku:'PROD-008', producto:'Cargador USB-C 65W',              cantidad:3,   total:'74.97'},
+  {orden:'ORD-E4-005', nombre:'Carla Miranda',     email:'carla.miranda@example.com',     sku:'PROD-005', producto:'Auriculares Sony WH-1000XM5',     cantidad:999, total:'349640.01'},
+  {orden:'ORD-E4-006', nombre:'Nicolas Vergara',   email:'nicolas.vergara@example.com',   sku:'PROD-006', producto:'Webcam Logitech C920',            cantidad:1,   total:'69.99'},
+  {orden:'ORD-E4-007', nombre:'Julieta Ferrero',   email:'julieta.ferrero@example.com',   sku:'PROD-002', producto:'Mouse Inalámbrico Logitech',      cantidad:2,   total:'59.98'},
+  {orden:'ORD-E4-008', nombre:'Ramiro Olguin',     email:'ramiro.olguin@example.com',     sku:'PROD-001', producto:'Notebook Lenovo IdeaPad 15',      cantidad:1,   total:'599.99'},
+  {orden:'ORD-E4-009', nombre:'Agustina Rossi',    email:'agustina.rossi@example.com',    sku:'PROD-004', producto:'Monitor Samsung 24" FHD',         cantidad:999, total:'249740.01'},
+  {orden:'ORD-E4-010', nombre:'Federico Lazcano',  email:'federico.lazcano@example.com',  sku:'PROD-007', producto:'SSD Kingston 480GB',              cantidad:1,   total:'44.99'},
+  {orden:'ORD-E4-011', nombre:'Valentina Duarte',  email:'valentina.duarte@example.com',  sku:'PROD-003', producto:'Teclado Mecánico Redragon',       cantidad:2,   total:'159.98'},
+  {orden:'ORD-E4-012', nombre:'Tomas Alcaraz',     email:'tomas.alcaraz@example.com',     sku:'PROD-001', producto:'Notebook Lenovo IdeaPad 15',      cantidad:999, total:'599390.01'}
+];
+
+const FAMILIARIZACION = 2;   // las 2 primeras se reportan aparte
+const CLAVE = 'e4_cronometro_v1';
+
+let idx = 0;            // orden actual
+let estado = 'listo';   // listo | t1 | t2 | t3
+let rama = null;        // con_stock | sin_stock
+let t0 = 0;             // performance.now() del inicio de la fase
+let parc = {t1:null, t2:null, t3:null};
+let filas = [];
+let tick = null;
+
+/* ---------- utilidades ---------- */
+const $ = id => document.getElementById(id);
+const seg = ms => (ms/1000).toFixed(1).replace('.', ',') + ' s';
+const ver = (id, si) => $(id).classList.toggle('oculto', !si);
+
+function guardar(){
+  try{
+    localStorage.setItem(CLAVE, JSON.stringify({idx, estado, rama, parc, filas}));
+  }catch(e){ /* sin localStorage se sigue igual; sólo se pierde el retomar */ }
+}
+
+/* ---------- arranque ---------- */
+window.addEventListener('DOMContentLoaded', () => {
+  let s = null;
+  try{ s = JSON.parse(localStorage.getItem(CLAVE) || 'null'); }catch(e){}
+  if (s && (s.filas.length > 0 || s.idx > 0)) ver('btn-retomar', true);
+});
+
+function empezar(){
+  idx = 0; estado = 'listo'; rama = null; filas = [];
+  parc = {t1:null, t2:null, t3:null};
+  ver('p-intro', false); ver('p-medir', true);
+  pintar();
+  guardar();
+}
+
+function retomar(){
+  const s = JSON.parse(localStorage.getItem(CLAVE));
+  ({idx, estado, rama, parc, filas} = s);
+  // Una fase a medio cronometrar no se puede reanudar sin mentir: se reinicia la orden.
+  if (estado !== 'listo'){ estado = 'listo'; rama = null; parc = {t1:null, t2:null, t3:null}; }
+  ver('p-intro', false);
+  if (idx >= ORDENES.length){ terminar(); return; }
+  ver('p-medir', true);
+  pintar();
+}
+
+/* ---------- pintado ---------- */
+function pintar(){
+  const o = ORDENES[idx];
+  const fam = idx < FAMILIARIZACION;
+
+  $('titulo').innerHTML = 'Orden ' + (idx+1) + ' de ' + ORDENES.length +
+    (fam ? ' <span class="tag fam">familiarización</span>' : '');
+  $('restantes').textContent = filas.filter(f => !f.descartada).length + ' registradas';
+  $('barra').style.width = (idx / ORDENES.length * 100) + '%';
+
+  $('d-orden').textContent    = o.orden;
+  $('d-nombre').textContent   = o.nombre;
+  $('d-email').textContent    = o.email;
+  $('d-producto').textContent = o.producto + ' (' + o.sku + ')';
+  $('d-cantidad').textContent = o.cantidad;
+  $('d-total').textContent    = '$' + o.total;
+
+  $('q1').textContent =
+    "SELECT p.sku, p.name, p.stock, o.quantity, o.total_amount\n" +
+    "FROM orders o JOIN products p ON p.id = o.product_id\n" +
+    "WHERE o.order_number = '" + o.orden + "';";
+
+  ver('f-listo', estado === 'listo');
+  ver('f-t1',    estado === 't1');
+  ver('f-t2',    estado === 't2');
+  ver('f-t3',    estado === 't3');
+  ver('rama-elegir', !rama);
+  ver('rama-hecha',  !!rama);
+
+  chip('c1', 'T1 lectura', parc.t1, estado === 't1');
+  chip('c2', 'T2 actualización', parc.t2, estado === 't2');
+  chip('c3', 'T3 redacción', parc.t3, estado === 't3');
+
+  if (estado === 'listo'){ $('reloj').textContent = '0,0 s'; $('reloj-pie').textContent = 'detenido'; }
+}
+
+function chip(id, txt, ms, viva){
+  $(id).innerHTML = txt + ' <b>' + (ms == null ? '—' : seg(ms)) + '</b>';
+  $(id).classList.toggle('viva', viva);
+}
+
+/* ---------- reloj ---------- */
+function arrancarReloj(fase){
+  t0 = performance.now();
+  $('reloj-pie').textContent = 'corriendo — ' + fase;
+  if (tick) clearInterval(tick);
+  tick = setInterval(() => { $('reloj').textContent = seg(performance.now() - t0); }, 100);
+}
+function pararReloj(){
+  if (tick){ clearInterval(tick); tick = null; }
+  return performance.now() - t0;
+}
+
+/* ---------- transiciones ---------- */
+function iniciarOrden(){
+  estado = 't1'; rama = null; parc = {t1:null, t2:null, t3:null};
+  pintar(); arrancarReloj('T1 lectura y verificación'); guardar();
+}
+
+function finT1(){
+  parc.t1 = pararReloj();
+  estado = 't2';
+  pintar(); arrancarReloj('T2 actualización'); guardar();
+}
+
+function elegirRama(cual){
+  rama = cual;
+  const o = ORDENES[idx];
+  $('q2').textContent = (cual === 'con_stock')
+    ? "UPDATE products SET stock = stock - " + o.cantidad + "\n" +
+      "WHERE sku = '" + o.sku + "';\n\n" +
+      "UPDATE orders SET status = 'confirmed', processed_at = NOW()\n" +
+      "WHERE order_number = '" + o.orden + "';"
+    : "UPDATE orders SET status = 'no_stock', processed_at = NOW()\n" +
+      "WHERE order_number = '" + o.orden + "';";
+  pintar(); guardar();
+}
+
+function finT2(){
+  parc.t2 = pararReloj();
+  estado = 't3';
+  const o = ORDENES[idx];
+  $('mail').value = plantilla(o, rama);
+  $('nota-t3').innerHTML = 'Al terminar de escribir, corré esto y recién después apretá el botón:' +
+    '<pre>UPDATE orders SET notified_at = NOW()\nWHERE order_number = \'' + o.orden + '\';</pre>';
+  pintar(); arrancarReloj('T3 redacción del correo');
+  $('mail').focus();
+  guardar();
+}
+
+function finT3(){
+  parc.t3 = pararReloj();
+  registrar(false);
+}
+
+function descartar(){
+  if (!confirm('¿Descartar esta orden? Queda registrada como descartada y no entra al promedio.')) return;
+  pararReloj();
+  registrar(true);
+}
+
+function registrar(descartada){
+  const o = ORDENES[idx];
+  filas.push({
+    n: idx + 1,
+    orden: o.orden,
+    familiarizacion: idx < FAMILIARIZACION,
+    descartada: descartada,
+    rama: rama || '',
+    t1: parc.t1, t2: parc.t2, t3: parc.t3,
+    email: descartada ? '' : ($('mail').value || '')
+  });
+  idx++; estado = 'listo'; rama = null; parc = {t1:null, t2:null, t3:null};
+  $('mail').value = '';
+  guardar();
+  if (idx >= ORDENES.length) terminar(); else pintar();
+}
+
+/* ---------- plantilla ---------- */
+function plantilla(o, cual){
+  if (cual === 'con_stock'){
+    return 'Para:    {email}\n' +
+           'Asunto:  Confirmación de Orden {orden}\n\n' +
+           'Hola {nombre},\n\n' +
+           'Tu orden fue confirmada exitosamente. Estos son los detalles:\n\n' +
+           '  Número de orden: {orden}\n' +
+           '  Producto:        {producto}\n' +
+           '  Cantidad:        {cantidad}\n' +
+           '  Total:           ${total}\n\n' +
+           'Te avisamos por este medio cuando el pedido sea despachado.\n\n' +
+           '¡Gracias por tu compra!\n\n' +
+           '--\nEquipo de Atención al Cliente\ntesis@ecommerce.local\n';
+  }
+  return 'Para:    {email}\n' +
+         'Asunto:  Orden {orden} - Producto sin stock\n\n' +
+         'Hola {nombre},\n\n' +
+         'Lamentamos informarte que el producto solicitado no tiene\n' +
+         'stock disponible en este momento.\n\n' +
+         '  Número de orden: {orden}\n' +
+         '  Producto:        {producto}\n' +
+         '  Cantidad pedida: {cantidad}\n\n' +
+         'Te contactaremos apenas se reponga. Si preferís cancelar la\n' +
+         'orden o elegir otro producto, respondé este correo.\n\n' +
+         'Disculpá las molestias.\n\n' +
+         '--\nEquipo de Atención al Cliente\ntesis@ecommerce.local\n';
+}
+
+/* ---------- cierre ---------- */
+function terminar(){
+  if (tick){ clearInterval(tick); tick = null; }
+  ver('p-medir', false); ver('p-fin', true);
+
+  const val = filas.filter(f => !f.descartada && !f.familiarizacion);
+  const fam = filas.filter(f => !f.descartada && f.familiarizacion);
+  const des = filas.filter(f => f.descartada);
+  const tot = f => f.t1 + f.t2 + f.t3;
+  const media = a => a.length ? a.reduce((s,f) => s + tot(f), 0) / a.length : 0;
+
+  $('resumen').innerHTML =
+    fila('Órdenes válidas (resultado primario)', val.length) +
+    fila('De familiarización (aparte)', fam.length) +
+    fila('Descartadas', des.length) +
+    fila('Media del total — válidas', val.length ? seg(media(val)) : '—') +
+    fila('Media del total — familiarización', fam.length ? seg(media(fam)) : '—');
+}
+function fila(k, v){ return '<tr><td>' + k + '</td><td class="dato">' + v + '</td></tr>'; }
+
+/* ---------- CSV ---------- */
+function esc(v){
+  const s = String(v == null ? '' : v);
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function bajarCSV(){
+  const cab = ['n','orden','familiarizacion','descartada','rama',
+               't1_seg','t2_seg','t3_seg','total_seg','email_chars','email_texto'];
+  const ln = [cab.join(',')];
+  for (const f of filas){
+    const t = (f.t1 == null || f.t2 == null || f.t3 == null) ? null : (f.t1 + f.t2 + f.t3);
+    const s = ms => ms == null ? '' : (ms/1000).toFixed(3);
+    ln.push([
+      f.n, f.orden, f.familiarizacion ? 1 : 0, f.descartada ? 1 : 0, f.rama,
+      s(f.t1), s(f.t2), s(f.t3), s(t), (f.email || '').length, esc(f.email)
+    ].join(','));
+  }
+  const sello = new Date().toISOString().slice(0,16).replace('T','_').replace(':','-');
+  const blob = new Blob(['﻿' + ln.join('\r\n') + '\r\n'], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'e4_tiempos_' + sello + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function borrarTodo(){
+  if (!confirm('¿Borrar la medición y empezar de nuevo? Si no descargaste el CSV, se pierde.')) return;
+  try{ localStorage.removeItem(CLAVE); }catch(e){}
+  location.reload();
+}
+</script>
+</body>
+</html>
