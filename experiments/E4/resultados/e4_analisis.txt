@@ -1,0 +1,120 @@
+
+==================================================================
+ E4 — BASELINE DE ATENCIÓN MANUAL
+==================================================================
+  Archivo: experiments/E4/resultados/e4_tiempos.csv
+  Órdenes cronometradas: 12
+    válidas (resultado primario): 10
+    de familiarización (aparte):  0
+    descartadas:                  2
+
+--- Integridad --------------------------------------------------
+  OK: todas las filas consistentes.
+
+==================================================================
+ RESULTADO PRIMARIO — 10 órdenes válidas
+==================================================================
+
+--- Por fase (segundos) -----------------------------------------
+  T1 lectura       n=10  media=    7.05  mediana=    7.12  sd=   2.00  min=   4.37  max=   11.39  p95=   11.39
+  T2 actualiz.     n=10  media=    5.80  mediana=    5.27  sd=   1.67  min=   4.45  max=    9.09  p95=    9.09
+  T3 redacción     n=10  media=   36.27  mediana=   34.91  sd=   6.55  min=  30.45  max=   53.67  p95=   53.67
+
+  TOTAL            n=10  media=   49.13  mediana=   46.37  sd=   8.15  min=  42.75  max=   69.80  p95=   69.80
+
+--- Tiempo total por orden --------------------------------------
+  Media:      49,1 s   (49.13 s)
+  Mediana:    46,4 s   (46.37 s)
+  IC 95%:     [43.30 ; 54.95] s   (t de Student, df=9, t=2.262, EE=2.58)
+              [43,3 s ; 55,0 s]
+
+--- Reparto del esfuerzo manual ---------------------------------
+  T1 lectura y verificación        7.05 s    14.3%
+  T2 actualización en la base      5.80 s    11.8%
+  T3 redacción del correo         36.27 s    73.8%
+
+--- Por rama ----------------------------------------------------
+  CON stock (confirmar) n= 7  media=   50.96  mediana=   49.35  sd=   9.21  min=  42.90  max=   69.80  p95=   69.80
+  SIN stock (avisar) n= 3  media=   44.84  mediana=   44.68  sd=   2.18  min=  42.75  max=   47.10  p95=   47.10
+
+==================================================================
+ CONTROLES METODOLÓGICOS
+==================================================================
+
+--- Efecto de aprendizaje ---------------------------------------
+  (sin órdenes de familiarización en el archivo)
+
+  Correlación orden-de-ejecución vs tiempo: r = -0.693
+  |r| >= 0,3 -> el aprendizaje SIGUE actuando dentro de las válidas.
+  Declararlo: la media subestima el tiempo de un operador no entrenado.
+
+  Coeficiente de variación: 16.6%
+  Dispersión baja: el procedimiento fue estable.
+
+==================================================================
+ CONTRASTE CON EL PIPELINE AUTOMATIZADO
+==================================================================
+
+--- 1) La afirmación falsable de H1: end-to-end < 30 s ----------
+  E2E automatizado medido (E1.a, n=50): 0.063 s
+  Umbral que fija H1:                   30.0 s
+  Margen: 476x por debajo del umbral.
+  >> H1 se cumple, y esto NO depende del baseline manual.
+     Reportar esto PRIMERO: es la contrastación de la hipótesis.
+
+--- 2) Factor contra el baseline manual medido ------------------
+  Baseline manual (media):  49.13 s  (49,1 s)
+  Pipeline automatizado:    0.063 s
+  Factor:                   780x      (IC 95%: 687x a 872x)
+  El E2E automatizado es el 0.1282% del tiempo manual.
+
+  !! NO usar este factor como titular. Va con la reserva, en la misma oración:
+     el numerador (0.063 s) es de un pipeline LOCAL — Mailpit en vez de SMTP real,
+     sin APIs externas, sin red. Es una COTA SUPERIOR del factor real, no el factor.
+     La tesis ya fue observada por declarar 190x cuando correspondía 31,6x (C-08).
+
+--- 3) Contraste con el rango "5 a 30 minutos" que declara el Capítulo 1 
+  Rango declarado sin fuente (C-09): 5 min 00,0 s a 30 min 00,0 s
+  Baseline medido:                   49,1 s
+
+  >> EL RANGO DECLARADO ESTABA SOBREESTIMADO, no subestimado.
+     Lo medido es 6,1x MENOR que el piso del rango que la tesis usó
+     como denominador de todas sus afirmaciones de impacto.
+
+     Esto es un hallazgo propio y hay que declararlo, no esconderlo: la
+     medición CORRIGE A LA BAJA el resultado más vistoso del trabajo.
+     Un equipo que mide y publica un número que lo perjudica es un equipo
+     creíble. Es el argumento más fuerte que E4 puede aportar a la defensa.
+
+--- 4) Latencia de detección — SUPUESTO declarado, nunca sumado a lo medido 
+  El baseline mide sólo procesamiento (decisión D-E4-2). Si además se supone que
+  un operador revisa la bandeja cada X minutos, la espera esperada es X/2:
+
+  revisa cada    espera media     total con espera   factor
+  5 min          2 min 30,0 s     3 min 19,1 s       3161x
+  15 min         7 min 30,0 s     8 min 19,1 s       7923x
+  30 min         15 min 00,0 s    15 min 49,1 s      15066x
+  60 min         30 min 00,0 s    30 min 49,1 s      29351x
+
+  Estas filas son ESCENARIOS, no mediciones. Van rotuladas como tales o no van.
+
+==================================================================
+ PARA PEGAR EN §5.4
+==================================================================
+
+  El tiempo de procesamiento manual se midió sobre 10 órdenes procesadas por un
+  operador de este equipo contra la misma base de datos y el mismo catálogo que
+  utiliza el pipeline (leer la orden, verificar stock, actualizar el estado y
+  redactar la notificación a partir de una plantilla fija). La media resultante
+  fue de 49,1 s por orden (IC 95%: 43,3 s a 55,0 s; mediana 46,4 s).
+  Desglose: lectura y verificación 7,0 s, actualización 5,8 s, redacción 36,3 s.
+
+  Este valor reemplaza al rango de 5 a 30 minutos declarado sin fuente en el
+  Capítulo 1, y constituye una medición propia y no una estimación.
+
+  Debe reportarse junto con dos limitaciones: (i) el tiempo se midió sobre un
+  operador que conocía el sistema, por lo que subestima el de un operador no
+  entrenado; y (ii) el término de comparación automatizado (0,063 s) proviene de
+  un entorno de laboratorio sin latencia de servicios externos, por lo que el
+  factor de mejora obtenido debe leerse como una cota superior.
+

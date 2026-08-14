@@ -33,6 +33,17 @@ BEGIN
 END $$;
 
 -- ------------------------------------------------------------
+--  La restriccion de B-5 solo admitia 'measured' y 'synthetic'.
+--  E4 necesita un TERCER valor propio, 'e4_manual': sus timestamps
+--  van a escala humana (minutos) y si se confunden con 'measured'
+--  destruyen el MTTD/MTTR de E1. Ver README, "Trampa critica".
+--  Idempotente: se puede correr las veces que haga falta.
+-- ------------------------------------------------------------
+ALTER TABLE orders DROP CONSTRAINT IF EXISTS orders_data_source_check;
+ALTER TABLE orders ADD  CONSTRAINT orders_data_source_check
+    CHECK (data_source IN ('measured', 'synthetic', 'e4_manual'));
+
+-- ------------------------------------------------------------
 --  LAS 12 ÓRDENES
 --
 --  - Emails @example.com (RFC 2606), por B-7.

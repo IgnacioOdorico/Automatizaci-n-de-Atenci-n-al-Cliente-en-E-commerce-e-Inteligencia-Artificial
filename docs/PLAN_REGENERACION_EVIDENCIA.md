@@ -649,9 +649,9 @@ Ejecutada el 2026-08-12 sobre 50 mensajes tomados al azar y en orden aleatorizad
 | 1 | **Etiquetar el corpus de E2** — ronda 1 (150) + ronda 2 (50) | ✅ §14.4.1 |
 | 2 | Ejecutar E2 contra `/webhook/whatsapp` y conciliar (B-6.6) | ✅ §14.7.2 — requirió D-7 |
 | 3 | E3 — TMR por intent con `GROUP BY` | ✅ §14.7.3 |
-| 4 | **E4 — baseline manual con cronómetro** | ⏳ **Independiente, 1 h. Es lo único que separa al Bloque 1 de estar completo.** |
-| 5 | E5 — recaptura de figuras + control de hashes | ⏳ requiere E1-E4 cerrados |
-| 6 | E6 — paquete de reproducibilidad | ⏳ **bloqueado por la deuda D-8 de §14.7.5** |
+| 4 | **E4 — baseline manual con cronómetro** | ✅ §14.9 — 49,1 s (n=10). Cierra C-09 y A-09 |
+| 5 | E5 — recaptura de figuras + control de hashes | ⏳ **desbloqueado: E1-E4 cerrados. Es lo que sigue.** |
+| 6 | E6 — paquete de reproducibilidad | ⏳ **desbloqueado: D-8 cerrada en `6927b60`** |
 | 7 | Redacción — Bloques 2, 3 y 4 de la auditoría | ⏳ todo lo anterior |
 
 ---
@@ -850,3 +850,60 @@ Si el baseline medido cae **por debajo de los 5 minutos**, entonces el rango "5 
 | `experiments/E4/plantilla_email.txt` | La plantilla fija de D-E4-1 |
 | `experiments/E4/cronometro.html` | Instrumento de medición. Autónomo, con reanudación |
 | `experiments/E4/analizar_e4.py` | Estadísticos por fase, IC por t de Student, factor con sus reservas |
+
+---
+
+## 14.9 E4 ejecutado — el baseline manual medido, y el rango del Cap. 1 corregido a la baja (2026-08-14)
+
+Medición realizada por un operador del equipo contra la misma base y el mismo catálogo que usa el Flujo 1. Datos crudos en `experiments/E4/resultados/e4_tiempos.csv`, salida del análisis en `e4_analisis.txt`. **Cierra C-09 y A-09.**
+
+### Resultado primario — n = 10
+
+| Fase | Media | Mediana | sd | Peso |
+|---|---|---|---|---|
+| T1 — lectura y verificación de stock | 7,05 s | 7,12 s | 2,00 | 14,3 % |
+| T2 — actualización en la base | 5,80 s | 5,27 s | 1,67 | 11,8 % |
+| T3 — redacción del correo | 36,27 s | 34,91 s | 6,55 | **73,8 %** |
+| **TOTAL por orden** | **49,13 s** | **46,37 s** | 8,15 | 100 % |
+
+**IC 95 % del total: [43,30 s ; 54,95 s]** (t de Student, df = 9, t = 2,262, EE = 2,58). Coeficiente de variación 16,6 % — dispersión baja, el procedimiento fue estable.
+
+Por rama: **con stock** n=7, media 50,96 s · **sin stock** n=3, media 44,84 s. Confirmar cuesta más que avisar, como era esperable (hay un `UPDATE` extra).
+
+De las 12 órdenes, **2 se descartaron** (ver "Incidentes" más abajo). El resultado primario sale de las 10 restantes — que es exactamente la n que pedía §6.
+
+### El hallazgo: el rango declarado estaba SOBREestimado
+
+> El Capítulo 1 usa "5 a 30 minutos" como denominador de todas sus afirmaciones de impacto, sin fuente (C-09).
+> **Lo medido —49,1 s— es 6,1x MENOR que el piso de ese rango.**
+
+La medición **corrige a la baja el resultado más vistoso del trabajo**: el factor cae de los ~3.000x que anticipaba §14.8 a **780x** (IC 95 %: 687x – 872x).
+
+Esto se declara, no se esconde. Es el argumento más fuerte que E4 aporta a la defensa: un equipo que mide su propio baseline y publica un número que lo perjudica es lo contrario exacto de lo que la auditoría encontró en la v5 (C-08).
+
+### Hallazgo secundario, con valor analítico propio
+
+**El 73,8 % del trabajo manual es redactar el correo**, no operar la base. T1 + T2 juntos son 12,9 s de 49,1 s. El valor de automatizar este ciclo no está en la consulta SQL: está en la notificación. Material para el Cap. 5 y para la discusión del Cap. 6.
+
+### Limitaciones — las dos se declaran en §5.4
+
+1. **Operador experto, no empleado de PyME.** El operador construyó el sistema y, además, **ya había procesado ~10 órdenes en una corrida previa abortada** (ver Incidentes). No era un operador nuevo. `analizar_e4.py` detectó el efecto residual: correlación orden-de-ejecución vs tiempo **r = −0,693**. **La media subestima el tiempo de un operador no entrenado.**
+2. **Numerador de laboratorio.** Los 0,063 s de E1.a son de un pipeline local (Mailpit, sin APIs externas, sin red). **El factor de 780x es una cota superior, no el factor real.**
+
+Ambos sesgos empujan en la misma dirección: **a la baja**. Es la dirección conservadora, coherente con D-E4-1 y D-E4-2.
+
+### Incidentes durante la ejecución — y qué se corrigió
+
+| # | Qué pasó | Corrección |
+|---|---|---|
+| 1 | `preparar_e4.sql` fallaba: `orders_data_source_check` sólo admitía `('measured','synthetic')`. La guarda del script verificaba que la **columna** existiera, no que el **valor** fuera admitido. | Restricción extendida a `('measured','synthetic','e4_manual')` y el `ALTER` incorporado al propio script, idempotente. Requisito para E6. |
+| 2 | La primera corrida se procesó en la base sin registrarse en el cronómetro. Hubo que volver a cero. | Rollback en una transacción: **primero** devolver el stock de las órdenes `confirmed`, **después** borrar. El `DELETE` suelto que traía comentado el script no devuelve el stock. Verificado contra el snapshot previo. |
+| 3 | Las órdenes 1 y 2 quedaron descartadas por la interrupción del incidente 1, en vez de reportarse como familiarización. | Se declaran como descartadas en el CSV (`descartada=1`). No se borran ni se reescriben. |
+
+### Cómo se reporta en §5.4 — en este orden
+
+1. **La afirmación falsable de H1: "menos de 30 segundos".** Medido 0,063 s (E1.a, n=50). Margen de 476x contra el umbral que el propio trabajo se fijó. **Esta es la contrastación de la hipótesis y no depende del baseline manual.**
+2. **El baseline medido y el factor de 780x**, acompañado *en la misma oración* de las dos limitaciones de arriba.
+3. **La latencia de detección, aparte**, rotulada como escenario y nunca sumada dentro del número medido. La tabla de escenarios está en `e4_analisis.txt`.
+
+El párrafo redactado para pegar en §5.4 lo emite `analizar_e4.py` al final de su salida.

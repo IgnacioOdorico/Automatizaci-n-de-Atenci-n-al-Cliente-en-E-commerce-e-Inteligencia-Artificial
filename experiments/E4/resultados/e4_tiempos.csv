@@ -1,0 +1,206 @@
+﻿n,orden,familiarizacion,descartada,rama,t1_seg,t2_seg,t3_seg,total_seg,email_chars,email_texto
+1,ORD-E4-001,1,1,,,,,,0,
+2,ORD-E4-002,1,1,sin_stock,8.033,,,,0,
+3,ORD-E4-003,0,0,con_stock,7.530,8.598,53.674,69.801,453,"Para:    {sofia.nardelli@example.com}
+Asunto:  Confirmación de Orden {ORD-E4-003}
+
+Hola {Sofia Nardelli},
+
+Tu orden fue confirmada exitosamente. Estos son los detalles:
+
+  Número de orden: {ORD-E4-003}
+  Producto:        {Teclado Mecánico Redragon (PROD-003)}
+  Cantidad:        {1}
+  Total:           ${79.99}
+
+Te avisamos por este medio cuando el pedido sea despachado.
+
+¡Gracias por tu compra!
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+"
+4,ORD-E4-004,0,0,con_stock,11.386,9.089,34.453,54.928,430,"Para:    {Emiliano Paz}
+Asunto:  Confirmación de Orden {ORD-E4-004}
+
+Hola {Emiliano Paz},
+
+Tu orden fue confirmada exitosamente. Estos son los detalles:
+
+  Número de orden: {ORD-E4-004}
+  Producto:        {Cargador USB-C 65W (PROD-008)}
+  Cantidad:        {3}
+  Total:           ${74.97}
+
+Te avisamos por este medio cuando el pedido sea despachado.
+
+¡Gracias por tu compra!
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+"
+5,ORD-E4-005,0,0,sin_stock,6.708,5.598,30.449,42.754,514,"Para:    {carla.miranda@example.com}
+Asunto:  Orden {ORD-E4-005} - Producto sin stock
+
+Hola {Carla Miranda},
+
+Lamentamos informarte que el producto solicitado no tiene
+stock disponible en este momento.
+
+  Número de orden: {ORD-E4-005}
+  Producto:        {Auriculares Sony WH-1000XM5 (PROD-005)}
+  Cantidad pedida: {999}
+
+Te contactaremos apenas se reponga. Si preferís cancelar la
+orden o elegir otro producto, respondé este correo.
+
+Disculpá las molestias.
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+"
+6,ORD-E4-006,0,0,con_stock,8.236,4.698,36.577,49.510,450,"Para:    {nicolas.vergara@example.com}
+Asunto:  Confirmación de Orden {ORD-E4-006}
+
+Hola {Nicolas Vergara},
+
+Tu orden fue confirmada exitosamente. Estos son los detalles:
+
+  Número de orden: {ORD-E4-006}
+  Producto:        {Webcam Logitech C920 (PROD-006)}
+  Cantidad:        {1}
+  Total:           ${69.99}
+
+Te avisamos por este medio cuando el pedido sea despachado.
+
+¡Gracias por tu compra!
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+"
+7,ORD-E4-007,0,0,con_stock,5.506,5.768,38.081,49.354,456,"Para:    {julieta.ferrero@example.com}
+Asunto:  Confirmación de Orden {ORD-E4-007}
+
+Hola {Julieta Ferrero},
+
+Tu orden fue confirmada exitosamente. Estos son los detalles:
+
+  Número de orden: {ORD-E4-007}
+  Producto:        {Mouse Inalámbrico Logitech (PROD-002)}
+  Cantidad:        {1}
+  Total:           ${59.98}
+
+Te avisamos por este medio cuando el pedido sea despachado.
+
+¡Gracias por tu compra!
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+"
+8,ORD-E4-008,0,0,con_stock,7.958,4.857,31.787,44.602,434,"Para:    {ramiro}
+Asunto:  Confirmación de Orden {ORD-E4-008}
+
+Hola {Ramiro Olguin},
+
+Tu orden fue confirmada exitosamente. Estos son los detalles:
+
+  Número de orden: {ORD-E4-008}
+  Producto:        {Notebook Lenovo IdeaPad 15 (PROD-001)}
+  Cantidad:        {1}
+  Total:           ${599.99}
+
+Te avisamos por este medio cuando el pedido sea despachado.
+
+¡Gracias por tu compra!
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+"
+9,ORD-E4-009,0,0,sin_stock,7.695,4.448,34.960,47.104,512,"Para:    {agustina.rossi@example.com}
+Asunto:  Orden {ORD-E4-009} - Producto sin stock
+
+Hola {Agustina Rossi},
+
+Lamentamos informarte que el producto solicitado no tiene
+stock disponible en este momento.
+
+  Número de orden: {ORD-E4-009}
+  Producto:        {Monitor Samsung 24"" FHD (PROD-004)}
+  Cantidad pedida: {999}
+
+Te contactaremos apenas se reponga. Si preferís cancelar la
+orden o elegir otro producto, respondé este correo.
+
+Disculpá las molestias.
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+"
+10,ORD-E4-010,0,0,con_stock,5.306,4.447,35.884,45.638,450,"Para:    {federico.lazcano@example.com}
+Asunto:  Confirmación de Orden {ORD-E4-010}
+
+Hola {Federico Lazcano},
+
+Tu orden fue confirmada exitosamente. Estos son los detalles:
+
+  Número de orden: {ORD-E4-010}
+  Producto:        {SSD Kingston 480GB (PROD-007)}
+  Cantidad:        {1}
+  Total:           ${44.99}
+
+Te avisamos por este medio cuando el pedido sea despachado.
+
+¡Gracias por tu compra!
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+"
+11,ORD-E4-011,0,0,con_stock,5.806,5.087,32.009,42.902,458,"Para:    {valentina.duarte@example.com}
+Asunto:  Confirmación de Orden {ORD-E4-011}
+
+Hola {Valentina Duarte},
+
+Tu orden fue confirmada exitosamente. Estos son los detalles:
+
+  Número de orden: {ORD-E4-011}
+  Producto:        {Teclado Mecánico Redragon (PROD-003)}
+  Cantidad:        {2}
+  Total:           ${159.98}
+
+Te avisamos por este medio cuando el pedido sea despachado.
+
+¡Gracias por tu compra!
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+"
+12,ORD-E4-012,0,0,sin_stock,4.365,5.448,34.863,44.676,513,"Para:    {tomas.alcaraz@example.com}
+Asunto:  Orden {ORD-E4-012} - Producto sin stock
+
+Hola {Tomas Alcaraz},
+
+Lamentamos informarte que el producto solicitado no tiene
+stock disponible en este momento.
+
+  Número de orden: {ORD-E4-012}
+  Producto:        {Notebook Lenovo IdeaPad 15 (PROD-001)}
+  Cantidad pedida: {999}
+
+Te contactaremos apenas se reponga. Si preferís cancelar la
+orden o elegir otro producto, respondé este correo.
+
+Disculpá las molestias.
+
+--
+Equipo de Atención al Cliente
+tesis@ecommerce.local
+"
