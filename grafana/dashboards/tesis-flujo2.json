@@ -47,7 +47,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT avg_tmr_seg AS \"TMR\" FROM v_metrics_summary;",
+          "rawSql": "SELECT ROUND(AVG(tmr_seconds)::numeric,2) AS \"TMR\" FROM v_chatbot_corpus;",
           "refId": "A"
         }
       ],
@@ -100,7 +100,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT total_interactions AS \"Interacciones\" FROM v_metrics_summary;",
+          "rawSql": "SELECT COUNT(*) AS \"Interacciones\" FROM v_chatbot_corpus;",
           "refId": "A"
         }
       ],
@@ -206,7 +206,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT total_tickets AS \"Tickets\" FROM v_metrics_summary;",
+          "rawSql": "SELECT COUNT(*) AS \"Tickets\" FROM tickets WHERE data_source='measured' AND created_at >= '2026-08-12 23:00:00' AND created_at < '2026-08-13 00:00:00';",
           "refId": "A"
         }
       ],
@@ -250,7 +250,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT intent AS metric, ROUND(AVG(EXTRACT(EPOCH FROM (responded_at-received_at)))::numeric,2) AS value FROM interactions WHERE data_source='measured' GROUP BY intent ORDER BY intent;",
+          "rawSql": "SELECT intent AS metric, ROUND(AVG(tmr_seconds)::numeric,2) AS value FROM v_chatbot_corpus GROUP BY intent ORDER BY intent;",
           "refId": "A"
         }
       ],
@@ -302,7 +302,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT intent AS metric, COUNT(*) AS value FROM interactions WHERE data_source='measured' GROUP BY intent ORDER BY value DESC;",
+          "rawSql": "SELECT intent AS metric, COUNT(*) AS value FROM v_chatbot_corpus GROUP BY intent ORDER BY value DESC;",
           "refId": "A"
         }
       ],
@@ -351,7 +351,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT fecha::timestamp AS \"time\", via_whatsapp AS \"WhatsApp\", via_telegram AS \"Telegram\", via_email AS \"Email\" FROM v_daily_chatbot_summary ORDER BY 1;",
+          "rawSql": "SELECT received_at::date::timestamp AS \"time\", COUNT(*) FILTER (WHERE channel='whatsapp') AS \"WhatsApp\", COUNT(*) FILTER (WHERE channel='telegram') AS \"Telegram\", COUNT(*) FILTER (WHERE channel='email') AS \"Email\" FROM v_chatbot_corpus GROUP BY 1 ORDER BY 1;",
           "refId": "A"
         }
       ],
@@ -370,5 +370,5 @@
   "timezone": "browser",
   "title": "Chatbot Omnicanal — Métricas (Flujo 2)",
   "uid": "tesis-flujo2",
-  "version": 2
+  "version": 3
 }
