@@ -7,17 +7,18 @@
 --  Autores: Santiago Sordi, Ignacio Odorico, Juan Cruz Ana
 --  Tutor:   Prof. Alberto Cortez
 --
---  VERSIÓN SIMPLIFICADA (para presentación/demo):
---    - Sin tabla pipeline_events
---    - Sin índices
---    - Sin extensiones
---    - TIMESTAMP en lugar de TIMESTAMPTZ
---    - orders.raw_payload (JSONB) presente; sin columna metadata
---    - Sin COMMENT ON TABLE/COLUMN
+--  VERSIÓN PARA DEMO (endurecida tras la auditoría, A-12):
+--    - TIMESTAMPTZ en todas las marcas temporales
+--    - Índices de rendimiento (los que OE3 promete)
+--    - Tabla order_items (N productos por orden; orders.product_id
+--      se conserva por compatibilidad con los workflows actuales)
+--    - Columna data_source (measured/synthetic) para separar datos
+--      medidos del seed en las métricas (B-5)
+--    - Sin tabla pipeline_events ni COMMENT ON (no necesarios en demo)
 --
 --  ESTRUCTURA:
---    Flujo 1 — Pipeline de órdenes: products, orders
---    Flujo 2 — Chatbot omnicanal:   interactions, tickets, faq_responses
+--    Flujo 1 — Pipeline de órdenes: products, orders, order_items
+--    Flujo 2 — Chatbot:             interactions, tickets, faq_responses
 --    Vistas:   5 vistas de métricas (MTTD, MTTR, TMR)
 -- ============================================================
 
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS products (
     stock           INTEGER        NOT NULL DEFAULT 0 CHECK (stock >= 0),
     stock_min       INTEGER        NOT NULL DEFAULT 5,
     category        VARCHAR(100),
-    created_at      TIMESTAMP      DEFAULT NOW()
+    created_at      TIMESTAMPTZ    DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS orders (
@@ -56,10 +57,25 @@ CREATE TABLE IF NOT EXISTS orders (
                         'cancelled',
                         'error'
                     )),
-    received_at     TIMESTAMP      DEFAULT NOW(),
-    processed_at    TIMESTAMP,
-    notified_at     TIMESTAMP,
-    raw_payload     JSONB
+    received_at     TIMESTAMPTZ    DEFAULT NOW(),
+    processed_at    TIMESTAMPTZ,
+    notified_at     TIMESTAMPTZ,
+    raw_payload     JSONB,
+    data_source     VARCHAR(20)    NOT NULL DEFAULT 'measured'
+                    CHECK (data_source IN ('measured', 'synthetic', 'e4_manual'))
+);
+
+-- Ítems de una orden: N productos por orden (A-12). orders.product_id y
+-- orders.quantity se conservan por compatibilidad con los workflows
+-- actuales (que cargan una orden mono-producto); el diseño objetivo es
+-- que cada línea de la orden viva acá.
+CREATE TABLE IF NOT EXISTS order_items (
+    id              SERIAL PRIMARY KEY,
+    order_id        INTEGER        NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    product_id      INTEGER        NOT NULL REFERENCES products(id),
+    quantity        INTEGER        NOT NULL CHECK (quantity > 0),
+    unit_price      DECIMAL(10,2)  NOT NULL CHECK (unit_price >= 0),
+    subtotal        DECIMAL(10,2)  GENERATED ALWAYS AS (quantity * unit_price) STORED
 );
 
 -- ############################################################
@@ -77,8 +93,10 @@ CREATE TABLE IF NOT EXISTS interactions (
     ai_response     TEXT           NOT NULL,
     order_id        INTEGER        REFERENCES orders(id) ON DELETE SET NULL,
     is_urgent       BOOLEAN        DEFAULT FALSE,
-    received_at     TIMESTAMP      DEFAULT NOW(),
-    responded_at    TIMESTAMP
+    received_at     TIMESTAMPTZ    DEFAULT NOW(),
+    responded_at    TIMESTAMPTZ,
+    data_source     VARCHAR(20)    NOT NULL DEFAULT 'measured'
+                    CHECK (data_source IN ('measured', 'synthetic'))
 );
 
 CREATE TABLE IF NOT EXISTS tickets (
@@ -93,8 +111,10 @@ CREATE TABLE IF NOT EXISTS tickets (
                     CHECK (status IN ('open', 'in_progress', 'resolved', 'closed')),
     priority        VARCHAR(20)    DEFAULT 'normal'
                     CHECK (priority IN ('low', 'normal', 'high', 'urgent')),
-    created_at      TIMESTAMP      DEFAULT NOW(),
-    resolved_at     TIMESTAMP
+    created_at      TIMESTAMPTZ    DEFAULT NOW(),
+    resolved_at     TIMESTAMPTZ,
+    data_source     VARCHAR(20)    NOT NULL DEFAULT 'measured'
+                    CHECK (data_source IN ('measured', 'synthetic'))
 );
 
 CREATE TABLE IF NOT EXISTS faq_responses (
@@ -103,8 +123,24 @@ CREATE TABLE IF NOT EXISTS faq_responses (
     answer          TEXT           NOT NULL,
     category        VARCHAR(100),
     enabled         BOOLEAN        DEFAULT TRUE,
-    created_at      TIMESTAMP      DEFAULT NOW()
+    created_at      TIMESTAMPTZ    DEFAULT NOW()
 );
+
+-- ############################################################
+--  ÍNDICES DE RENDIMIENTO (OE3 / A-12)
+--  Cada índice responde a una query real de los flujos o vistas.
+-- ############################################################
+
+CREATE INDEX IF NOT EXISTS idx_orders_status              ON orders (status);
+CREATE INDEX IF NOT EXISTS idx_orders_source_received     ON orders (data_source, received_at);
+CREATE INDEX IF NOT EXISTS idx_order_items_order_id       ON order_items (order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_product_id     ON order_items (product_id);
+CREATE INDEX IF NOT EXISTS idx_interactions_intent        ON interactions (intent);
+CREATE INDEX IF NOT EXISTS idx_interactions_channel_received ON interactions (channel, received_at);
+CREATE INDEX IF NOT EXISTS idx_interactions_source        ON interactions (data_source);
+CREATE INDEX IF NOT EXISTS idx_interactions_order_id      ON interactions (order_id);
+CREATE INDEX IF NOT EXISTS idx_tickets_order_id           ON tickets (order_id);
+CREATE INDEX IF NOT EXISTS idx_tickets_status             ON tickets (status);
 
 -- ############################################################
 --  VISTAS — MÉTRICAS PARA LA TESIS
