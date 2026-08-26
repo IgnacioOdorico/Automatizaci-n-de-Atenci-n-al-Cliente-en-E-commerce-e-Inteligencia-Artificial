@@ -9,11 +9,23 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "green",
-            "mode": "fixed"
+            "mode": "thresholds"
           },
           "decimals": 2,
-          "unit": "none"
+          "unit": "none",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          }
         },
         "overrides": []
       },
@@ -62,8 +74,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "purple",
-            "mode": "fixed"
+            "mode": "fixed",
+            "fixedColor": "blue"
           },
           "decimals": 0,
           "unit": "short"
@@ -115,11 +127,23 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
+            "mode": "thresholds"
           },
           "decimals": 1,
-          "unit": "percent"
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 85
+              }
+            ]
+          }
         },
         "overrides": []
       },
@@ -168,8 +192,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "orange",
-            "mode": "fixed"
+            "mode": "fixed",
+            "fixedColor": "blue"
           },
           "decimals": 0,
           "unit": "short"
@@ -370,5 +394,5 @@
   "timezone": "browser",
   "title": "Chatbot Omnicanal — Métricas (Flujo 2)",
   "uid": "tesis-flujo2",
-  "version": 3
+  "version": 4
 }
