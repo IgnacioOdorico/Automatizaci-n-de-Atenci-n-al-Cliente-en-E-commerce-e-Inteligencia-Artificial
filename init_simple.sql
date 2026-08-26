@@ -14,10 +14,11 @@
 --      se conserva por compatibilidad con los workflows actuales)
 --    - Columna data_source (measured/synthetic) para separar datos
 --      medidos del seed en las métricas (B-5)
+--    - Tabla stock_alerts (alerta de reposición, A-07)
 --    - Sin tabla pipeline_events ni COMMENT ON (no necesarios en demo)
 --
 --  ESTRUCTURA:
---    Flujo 1 — Pipeline de órdenes: products, orders, order_items
+--    Flujo 1 — Pipeline de órdenes: products, orders, order_items, stock_alerts
 --    Flujo 2 — Chatbot:             interactions, tickets, faq_responses
 --    Vistas:   5 vistas de métricas (MTTD, MTTR, TMR)
 -- ============================================================
@@ -78,6 +79,20 @@ CREATE TABLE IF NOT EXISTS order_items (
     subtotal        DECIMAL(10,2)  GENERATED ALWAYS AS (quantity * unit_price) STORED
 );
 
+-- Alertas de stock bajo (A-07): se registra cada vez que un producto
+-- cruza su umbral de reposicion tras descontarse el stock de una orden.
+CREATE TABLE IF NOT EXISTS stock_alerts (
+    id              SERIAL PRIMARY KEY,
+    product_id      INTEGER        NOT NULL REFERENCES products(id),
+    order_id        INTEGER        REFERENCES orders(id) ON DELETE SET NULL,
+    sku             VARCHAR(50)    NOT NULL,
+    stock_actual    INTEGER        NOT NULL CHECK (stock_actual >= 0),
+    stock_min       INTEGER        NOT NULL,
+    created_at      TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+    data_source     VARCHAR(20)    NOT NULL DEFAULT 'measured'
+                    CHECK (data_source IN ('measured', 'synthetic'))
+);
+
 -- ############################################################
 --  FLUJO 2 — CHATBOT OMNICANAL CON IA
 -- ############################################################
@@ -135,6 +150,8 @@ CREATE INDEX IF NOT EXISTS idx_orders_status              ON orders (status);
 CREATE INDEX IF NOT EXISTS idx_orders_source_received     ON orders (data_source, received_at);
 CREATE INDEX IF NOT EXISTS idx_order_items_order_id       ON order_items (order_id);
 CREATE INDEX IF NOT EXISTS idx_order_items_product_id     ON order_items (product_id);
+CREATE INDEX IF NOT EXISTS idx_stock_alerts_product     ON stock_alerts (product_id);
+CREATE INDEX IF NOT EXISTS idx_stock_alerts_created     ON stock_alerts (created_at);
 CREATE INDEX IF NOT EXISTS idx_interactions_intent        ON interactions (intent);
 CREATE INDEX IF NOT EXISTS idx_interactions_channel_received ON interactions (channel, received_at);
 CREATE INDEX IF NOT EXISTS idx_interactions_source        ON interactions (data_source);
