@@ -1,0 +1,94 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>
+  html,body{margin:0;padding:0;background:#161029;}
+  .wrap{width:1360px;padding:34px 40px 26px;font-family:"Segoe UI",system-ui,sans-serif;}
+  h1{color:#fff;font-size:23px;text-align:center;margin:0 0 4px;font-weight:700;}
+  .sub{color:#9b94b5;font-size:14px;text-align:center;margin:0 0 26px;}
+  .foot{color:#6f6890;font-size:12.5px;text-align:center;margin-top:22px;}
+  svg{display:block;margin:0 auto;}
+  .bx{fill:#2a2440;stroke-width:2;rx:9;}
+  .lbl{fill:#e9e6f5;font-size:14.5px;font-family:"Segoe UI",system-ui,sans-serif;text-anchor:middle;}
+  .lbl small{font-size:11.5px;}
+  .sm{fill:#9b94b5;font-size:11.5px;text-anchor:middle;font-family:"Segoe UI",system-ui,sans-serif;}
+  .ed{stroke:#8f88ad;stroke-width:2;fill:none;marker-end:url(#ar);}
+  .et{fill:#c9c2e4;font-size:12.5px;font-family:"Segoe UI",system-ui,sans-serif;}
+</style>
+<div class="wrap">
+  <h1>Figura&nbsp;— Diagrama Flujo 1: Pipeline de Procesamiento de Órdenes</h1>
+  <p class="sub">Sección 4.3.2 · 15 nodos · n8n + PostgreSQL + Mailpit</p>
+<svg width="1280" height="1010" viewBox="0 0 1280 1010" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8f88ad"/>
+    </marker>
+  </defs>
+
+  <!-- camino principal -->
+  <rect class="bx" x="415" y="20"  width="330" height="56" stroke="#6ea8fe" fill="#25406b"/>
+  <text class="lbl" x="580" y="54" font-weight="700">POST /orden-nueva (Webhook)</text>
+
+  <rect class="bx" x="415" y="118" width="330" height="56" stroke="#6ea8fe"/>
+  <text class="lbl" x="580" y="152">Registrar Orden en BD</text>
+
+  <rect class="bx" x="415" y="216" width="330" height="56" stroke="#6ea8fe"/>
+  <text class="lbl" x="580" y="250">Verificar Stock en PostgreSQL</text>
+
+  <!-- decision stock ok -->
+  <path d="M580,314 L780,364 L580,414 L380,364 Z" fill="#2a2440" stroke="#e6c86e" stroke-width="2"/>
+  <text class="lbl" x="580" y="358" font-weight="700">¿Stock OK?</text>
+  <text class="sm"  x="580" y="378">stock &gt;= quantity</text>
+
+  <rect class="bx" x="415" y="466" width="330" height="56" stroke="#7ddba1"/>
+  <text class="lbl" x="580" y="500">Actualizar Stock</text>
+
+  <!-- decision stock bajo -->
+  <path d="M580,564 L790,614 L580,664 L370,614 Z" fill="#2a2440" stroke="#e6c86e" stroke-width="2"/>
+  <text class="lbl" x="580" y="608" font-weight="700">¿Stock Bajo?</text>
+  <text class="sm"  x="580" y="628">stock &lt; stock_min</text>
+
+  <rect class="bx" x="60" y="586" width="250" height="60" stroke="#e6c86e"/>
+  <text class="lbl" x="185" y="612">Registrar Alerta</text>
+  <text class="sm"  x="185" y="632">INSERT en stock_alerts</text>
+
+  <rect class="bx" x="415" y="716" width="330" height="56" stroke="#7ddba1"/>
+  <text class="lbl" x="580" y="750">Confirmar Orden (status=confirmed)</text>
+
+  <rect class="bx" x="415" y="814" width="330" height="56" stroke="#7ddba1"/>
+  <text class="lbl" x="580" y="848">Email Confirmación (Mailpit)</text>
+
+  <rect class="bx" x="415" y="912" width="330" height="56" stroke="#7ddba1" fill="#2f5c3f"/>
+  <text class="lbl" x="580" y="946" font-weight="700">Respuesta Webhook (200 OK)</text>
+
+  <!-- rama sin stock -->
+  <rect class="bx" x="900" y="466" width="300" height="56" stroke="#e88fa8"/>
+  <text class="lbl" x="1050" y="500">Marcar Sin Stock</text>
+
+  <rect class="bx" x="900" y="564" width="300" height="56" stroke="#e88fa8"/>
+  <text class="lbl" x="1050" y="598">Email Sin Stock</text>
+
+  <rect class="bx" x="900" y="662" width="300" height="56" stroke="#e88fa8" fill="#6b2b40"/>
+  <text class="lbl" x="1050" y="696" font-weight="700">Respuesta Webhook</text>
+
+  <!-- aristas -->
+  <path class="ed" d="M580,76  L580,116"/>
+  <path class="ed" d="M580,174 L580,214"/>
+  <path class="ed" d="M580,272 L580,312"/>
+  <path class="ed" d="M580,414 L580,464"/>
+  <text class="et" x="592" y="446">SÍ</text>
+  <path class="ed" d="M780,364 L1050,364 L1050,464"/>
+  <text class="et" x="892" y="354">NO</text>
+  <path class="ed" d="M580,522 L580,562"/>
+  <path class="ed" d="M370,614 L312,614"/>
+  <text class="et" x="326" y="602">SÍ</text>
+  <path class="ed" d="M580,664 L580,714"/>
+  <text class="et" x="592" y="698">NO</text>
+  <!-- la alerta vuelve al camino principal -->
+  <path class="ed" d="M185,646 L185,744 L413,744"/>
+  <path class="ed" d="M580,772 L580,812"/>
+  <path class="ed" d="M580,870 L580,910"/>
+  <path class="ed" d="M1050,522 L1050,562"/>
+  <path class="ed" d="M1050,620 L1050,660"/>
+</svg>
+  <p class="foot">Fuente: elaboración propia · n8n workflow · ecommerce_tesis</p>
+</div>
