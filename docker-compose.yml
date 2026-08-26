@@ -1,5 +1,3 @@
-version: '3.8'
-
 # ============================================================
 #  TESIS UTN FRM — Pipeline Post-Venta E-commerce con n8n
 #  "Automatización del ciclo post-venta en e-commerce:
@@ -30,23 +28,30 @@ services:
   # Acceso: http://localhost:5678
   # ----------------------------------------------------------
   n8n:
-    image: n8nio/n8n:latest
+    image: n8nio/n8n:2.12.2
     container_name: tesis_n8n
     restart: unless-stopped
     ports:
       - "5678:5678"
     environment:
+      # WEBHOOK_URL: URL pública HTTPS para que el Telegram Trigger registre su
+      # webhook (n8n 2.x removió el --tunnel interno). Para la demo se usa ngrok:
+      #   1) ngrok http 5678   → devuelve https://XXXX.ngrok-free.dev
+      #   2) export WEBHOOK_URL=https://XXXX.ngrok-free.dev/   (o setearla en un .env)
+      #   3) recrear n8n. Sin esto queda en localhost y Telegram no se registra.
+      # En producción se reemplaza por un dominio propio con HTTPS.
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678/}
       # Conexión a PostgreSQL (BD interna de n8n + datos del proyecto)
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=postgres
       - DB_POSTGRESDB_PORT=5432
       - DB_POSTGRESDB_DATABASE=ecommerce_tesis
       - DB_POSTGRESDB_USER=n8n_user
-      - DB_POSTGRESDB_PASSWORD=n8n_pass
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:-n8n_pass}
       # Autenticación web
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=admin123
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-admin123}
       # SMTP — apunta a Mailpit local (Flujo 1: emails de confirmación)
       - N8N_EMAIL_MODE=smtp
       - N8N_SMTP_HOST=mailpit
@@ -78,7 +83,7 @@ services:
   # Host: localhost:5432 | BD: ecommerce_tesis
   # ----------------------------------------------------------
   postgres:
-    image: postgres:15-alpine
+    image: postgres:15.13-alpine
     container_name: tesis_postgres
     restart: unless-stopped
     ports:
@@ -89,7 +94,7 @@ services:
     environment:
       POSTGRES_DB: ecommerce_tesis
       POSTGRES_USER: n8n_user
-      POSTGRES_PASSWORD: n8n_pass
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-n8n_pass}
     volumes:
       - pg_data:/var/lib/postgresql/data
       - ./init_simple.sql:/docker-entrypoint-initdb.d/01_init.sql
@@ -108,7 +113,7 @@ services:
   # SMTP interno: mailpit:1025
   # ----------------------------------------------------------
   mailpit:
-    image: axllent/mailpit:latest
+    image: axllent/mailpit:v1.29.6
     container_name: tesis_mailpit
     restart: unless-stopped
     ports:
@@ -123,16 +128,16 @@ services:
   #   v_order_processing_time  → MTTD/MTTR (Flujo 1)
   #   v_chatbot_response_time  → TMR (Flujo 2)
   #   v_metrics_summary        → Resumen ejecutivo
-  # Acceso: http://localhost:3000 (admin / admin)
+  # Acceso: http://localhost:3000 (usuario admin; contrasena via GRAFANA_PASSWORD)
   # ----------------------------------------------------------
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:13.0.0
     container_name: tesis_grafana
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - grafana_data:/var/lib/grafana
