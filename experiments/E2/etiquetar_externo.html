@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Etiquetado de mensajes — Evaluador independiente</title>
+<style>
+ *{box-sizing:border-box} body{font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:0;
+  background:#0f172a;color:#e2e8f0;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+ .card{background:#1e293b;border-radius:16px;padding:32px;max-width:680px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+ h1{font-size:18px;margin:0 0 4px;color:#94a3b8;font-weight:600}
+ .prog{font-size:13px;color:#64748b;margin-bottom:24px}
+ .bar{height:6px;background:#334155;border-radius:99px;overflow:hidden;margin:10px 0 24px}
+ .bar>i{display:block;height:100%;background:#38bdf8;width:0;transition:width .2s}
+ .msg{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:28px 24px;
+  font-size:20px;line-height:1.5;margin-bottom:28px;min-height:100px;display:flex;align-items:center}
+ .btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+ button{padding:16px;font-size:15px;font-weight:600;border:1px solid #475569;border-radius:10px;
+  background:#334155;color:#e2e8f0;cursor:pointer;transition:.15s}
+ button:hover{background:#475569;border-color:#38bdf8}
+ button small{display:block;font-weight:400;font-size:12px;color:#94a3b8;margin-top:4px}
+ .done{text-align:center}
+ .done h2{color:#4ade80}
+ .guia{background:#172033;border-left:3px solid #38bdf8;padding:14px 16px;border-radius:8px;
+  font-size:13px;color:#94a3b8;margin-bottom:24px;line-height:1.6}
+ a.dl{display:inline-block;margin-top:16px;padding:14px 28px;background:#38bdf8;color:#0f172a;
+  text-decoration:none;border-radius:10px;font-weight:700}
+</style></head><body>
+<div class="card" id="app"></div>
+<script>
+const DATOS = [{"id": "101", "mensaje": "los envios son con seguro?"}, {"id": "20", "mensaje": "cuanto sale el envio a cordoba?"}, {"id": "66", "mensaje": "pesimo servicio, nunca mas compro aca"}, {"id": "5", "mensaje": "cuanto tarda el envio? porque el mio ya lleva 8 dias"}, {"id": "47", "mensaje": "cuantos dias tengo para devolver algo?"}, {"id": "110", "mensaje": "el producto vino sin los accesorios que decia"}, {"id": "27", "mensaje": "buen dia"}, {"id": "55", "mensaje": "buenisimo, muchas gracias"}, {"id": "82", "mensaje": "hace cuanto salio mi envio?"}, {"id": "70", "mensaje": "el teclado dejo de andar a los 3 dias"}, {"id": "25", "mensaje": "aceptan mercado pago?"}, {"id": "61", "mensaje": "trabajan con oca o andreani?"}, {"id": "72", "mensaje": "la garantia la cubre la marca o ustedes?"}, {"id": "147", "mensaje": "felices fiestas!"}, {"id": "149", "mensaje": "hola buenas"}, {"id": "14", "mensaje": "buenas!"}, {"id": "146", "mensaje": "nada, ya lo resolvi, gracias igual"}, {"id": "138", "mensaje": "sos un bot o una persona?"}, {"id": "2", "mensaje": "me llego el producto equivocado"}, {"id": "45", "mensaje": "me estafaron, no llego nada y ya pague"}, {"id": "41", "mensaje": "quiero hablar con un supervisor"}, {"id": "114", "mensaje": "atencion pesima, llevo 40 minutos esperando respuesta"}, {"id": "57", "mensaje": "donde anda mi paquete"}, {"id": "58", "mensaje": "hasta cuantas cuotas sin interes hay?"}, {"id": "128", "mensaje": "me pueden ayudar?"}, {"id": "117", "mensaje": "me quieren cobrar el envio de la devolucion cuando el error fue de ustedes"}, {"id": "119", "mensaje": "si pago con transferencia cuando despachan?"}, {"id": "123", "mensaje": "tienen reembolso si el producto llega roto?"}, {"id": "142", "mensaje": "quien me esta respondiendo?"}, {"id": "37", "mensaje": "es la tercera vez que escribo y nadie me contesta"}, {"id": "103", "mensaje": "compre con el mail lucia.perez@example.com, que paso con mi orden?"}, {"id": "13", "mensaje": "tienen garantia los productos?"}, {"id": "35", "mensaje": "hola, hice una compra a nombre de Sordi, esta en camino?"}, {"id": "81", "mensaje": "el producto no es como se ve en la foto"}, {"id": "127", "mensaje": "la factura vino con datos mal cargados"}, {"id": "44", "mensaje": "tienen local fisico para retirar?"}, {"id": "50", "mensaje": "me confirman que recibieron mi orden?"}, {"id": "131", "mensaje": "exijo que me devuelvan la plata hoy mismo"}, {"id": "87", "mensaje": "gracias, muy amables"}, {"id": "3", "mensaje": "hacen envios a todo el pais?"}, {"id": "38", "mensaje": "mi pedido no llega y ya pasaron los 5 dias que decia la web"}, {"id": "74", "mensaje": "me cobraron el envio que decia que era gratis"}, {"id": "18", "mensaje": "quiero la devolucion de mi plata"}, {"id": "89", "mensaje": "me dijeron que llegaba hoy, se sabe algo?"}, {"id": "46", "mensaje": "compre el lunes y todavia nada, esta todo bien?"}, {"id": "109", "mensaje": "tienen stock del PROD-013? porque lo pedi y me dijeron que no habia"}, {"id": "150", "mensaje": "me llego el paquete pero adentro habia otra cosa"}, {"id": "24", "mensaje": "quiero saber el estado de mi compra por favor"}, {"id": "80", "mensaje": "buenas tardes"}, {"id": "98", "mensaje": "dale, gracias"}];
+const CLASES = [
+ ["FAQ","Pregunta general sobre la tienda: envíos, pagos, garantía, horarios"],
+ ["ESTADO_PEDIDO","Pregunta por una compra ya hecha (suele mencionar un nº de orden)"],
+ ["RECLAMO","Queja o problema: algo llegó mal, no llegó, pide reembolso"],
+ ["GENERAL","Saludo, agradecimiento o mensaje que no encaja en las otras"]
+];
+let i = 0, res = [], t0 = 0;
+const app = document.getElementById('app');
+
+function intro(){
+  app.innerHTML = `<h1>Etiquetado de mensajes de clientes</h1>
+  <div class="guia">
+    Vas a ver <b>50 mensajes</b> que escribieron clientes de una tienda online.
+    Para cada uno elegí <b>la categoría que mejor lo describe</b>.<br><br>
+    No hay respuestas trampa: elegí lo que te parezca más razonable a primera vista.
+    Si dudás entre dos, elegí la que más pese. <b>No vuelvas atrás</b> ni lo pienses de más.<br><br>
+    Tarda entre 20 y 40 minutos. Al final se descarga un archivo que hay que devolver.
+  </div>
+  <button style="width:100%" onclick="arrancar()">Empezar</button>`;
+}
+function arrancar(){ i=0; res=[]; render(); }
+function render(){
+  if(i>=DATOS.length) return fin();
+  const d = DATOS[i]; t0 = Date.now();
+  app.innerHTML = `<h1>Etiquetado de mensajes de clientes</h1>
+   <div class="prog">Mensaje ${i+1} de ${DATOS.length}</div>
+   <div class="bar"><i style="width:${(i/DATOS.length*100).toFixed(1)}%"></i></div>
+   <div class="msg">${d.mensaje.replace(/</g,'&lt;')}</div>
+   <div class="btns">${CLASES.map((c,k)=>
+     `<button onclick="elegir('${c[0]}')">${c[0]}<small>${c[1]}</small></button>`).join('')}</div>`;
+}
+function elegir(intent){
+  res.push({id:DATOS[i].id, intent:intent, segundos:((Date.now()-t0)/1000).toFixed(1)});
+  i++; render();
+}
+function fin(){
+  const csv = "id,intent,segundos\n" + res.map(r=>`${r.id},${r.intent},${r.segundos}`).join("\n");
+  const url = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  app.innerHTML = `<div class="done"><h2>¡Listo! Terminaste los ${res.length}</h2>
+   <p style="color:#94a3b8">Descargá el archivo y devolveselo a quien te lo pidió.</p>
+   <a class="dl" href="${url}" download="etiquetas_evaluador_externo.csv">Descargar resultado</a></div>`;
+}
+intro();
+</script></body></html>
