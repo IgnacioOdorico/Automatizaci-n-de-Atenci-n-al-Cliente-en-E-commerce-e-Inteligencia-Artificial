@@ -2,7 +2,7 @@
   "updatedAt": "2026-04-23T00:22:07.417Z",
   "createdAt": "2026-04-22T02:52:08.453Z",
   "id": null,
-  "name": "Flujo 1 � Pipeline de Procesamiento de �rdenes PRODUCCION",
+  "name": "Flujo 1 — Pipeline de Procesamiento de Órdenes PRODUCCION",
   "description": null,
   "active": false,
   "isArchived": false,
@@ -145,12 +145,12 @@
       "parameters": {
         "fromEmail": "tesis@ecommerce.local",
         "toEmail": "={{ $('Webhook - Recibir Orden').item.json.body.customer_email }}",
-        "subject": "=Confirmaci├│n de Orden {{ $('Registrar Orden').item.json.order_number }}",
-        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <h2 style=\"color: #2e7d32;\">┬íGracias por tu compra!</h2>\n\n  <p>Hola <strong>{{ $('Webhook - Recibir Orden').item.json.body.customer_name }}</strong>,</p>\n\n  <p>Tu orden ha sido confirmada exitosamente. Aqu├¡ est├ín los detalles:</p>\n\n  <table style=\"width: 100%; border-collapse: collapse; margin: 20px 0;\">\n    <tr style=\"background-color: #f5f5f5;\">\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>N├║mero de orden</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">{{ $('Registrar Orden').item.json.order_number }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Producto</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">{{ $('Verificar Stock').item.json.product_name }}</td>\n    </tr>\n    <tr style=\"background-color: #f5f5f5;\">\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Cantidad</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">{{ $('Webhook - Recibir Orden').item.json.body.quantity }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Total</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">${{ $('Registrar Orden').item.json.total_amount }}</td>\n    </tr>\n    <tr style=\"background-color: #f5f5f5;\">\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Estado</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">Confirmada</td>\n    </tr>\n  </table>\n\n  <p>Te notificaremos cuando tu pedido sea enviado.</p>\n\n  <p style=\"color: #888; font-size: 12px;\">\n    Este es un email autom├ítico del sistema de e-commerce ÔÇö Tesis UTN FRM 2026\n  </p>\n</div>",
+        "subject": "=Confirmaciâ”œâ”‚n de Orden {{ $('Registrar Orden').item.json.order_number }}",
+        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <h2 style=\"color: #2e7d32;\">â”¬Ã­Gracias por tu compra!</h2>\n\n  <p>Hola <strong>{{ $('Webhook - Recibir Orden').item.json.body.customer_name }}</strong>,</p>\n\n  <p>Tu orden ha sido confirmada exitosamente. Aquâ”œÂ¡ estâ”œÃ­n los detalles:</p>\n\n  <table style=\"width: 100%; border-collapse: collapse; margin: 20px 0;\">\n    <tr style=\"background-color: #f5f5f5;\">\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Nâ”œâ•‘mero de orden</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">{{ $('Registrar Orden').item.json.order_number }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Producto</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">{{ $('Verificar Stock').item.json.product_name }}</td>\n    </tr>\n    <tr style=\"background-color: #f5f5f5;\">\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Cantidad</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">{{ $('Webhook - Recibir Orden').item.json.body.quantity }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Total</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">${{ $('Registrar Orden').item.json.total_amount }}</td>\n    </tr>\n    <tr style=\"background-color: #f5f5f5;\">\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Estado</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">Confirmada</td>\n    </tr>\n  </table>\n\n  <p>Te notificaremos cuando tu pedido sea enviado.</p>\n\n  <p style=\"color: #888; font-size: 12px;\">\n    Este es un email automâ”œÃ­tico del sistema de e-commerce Ã”Ã‡Ã¶ Tesis UTN FRM 2026\n  </p>\n</div>",
         "options": {}
       },
       "id": "4e8a4686-5cea-4c0c-bb35-09754b42efa9",
-      "name": "Enviar Email Confirmaci├│n",
+      "name": "Enviar Email Confirmaciâ”œâ”‚n",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
@@ -172,7 +172,7 @@
         "options": {}
       },
       "id": "4ecef653-b067-4d25-9347-d9e2bf84522d",
-      "name": "Registrar Notificaci├│n",
+      "name": "Registrar Notificaciâ”œâ”‚n",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.5,
       "position": [
@@ -189,7 +189,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": true,\n  \"order_number\": \"{{ $('Registrar Orden').item.json.order_number }}\",\n  \"status\": \"confirmed\",\n  \"total_amount\": {{ $('Registrar Orden').item.json.total_amount }},\n  \"message\": \"Orden procesada y confirmada. Email de confirmaci├│n enviado.\"\n}",
+        "responseBody": "={\n  \"success\": true,\n  \"order_number\": \"{{ $('Registrar Orden').item.json.order_number }}\",\n  \"status\": \"confirmed\",\n  \"total_amount\": {{ $('Registrar Orden').item.json.total_amount }},\n  \"message\": \"Orden procesada y confirmada. Email de confirmaciâ”œâ”‚n enviado.\"\n}",
         "options": {}
       },
       "id": "910b3695-ac16-4797-8af3-da146169e033",
@@ -226,8 +226,8 @@
       "parameters": {
         "fromEmail": "tesis@ecommerce.local",
         "toEmail": "={{ $('Webhook - Recibir Orden').item.json.body.customer_email }}",
-        "subject": "=Orden {{ $('Registrar Orden').item.json.order_number }} ÔÇö Producto sin stock",
-        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <h2 style=\"color: #c62828;\">Aviso sobre tu orden</h2>\n\n  <p>Hola <strong>{{ $('Webhook - Recibir Orden').item.json.body.customer_name }}</strong>,</p>\n\n  <p>Lamentamos informarte que el producto solicitado no tiene stock disponible en este momento.</p>\n\n  <table style=\"width: 100%; border-collapse: collapse; margin: 20px 0;\">\n    <tr style=\"background-color: #f5f5f5;\">\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>N├║mero de orden</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">{{ $('Registrar Orden').item.json.order_number }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Producto</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">{{ $('Verificar Stock').item.json.product_name }}</td>\n    </tr>\n    <tr style=\"background-color: #f5f5f5;\">\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Estado</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">Sin stock</td>\n    </tr>\n  </table>\n\n  <p>Nos pondremos en contacto contigo cuando el producto est├® disponible nuevamente.</p>\n\n  <p style=\"color: #888; font-size: 12px;\">\n    Este es un email autom├ítico del sistema de e-commerce ÔÇö Tesis UTN FRM 2026\n  </p>\n</div>",
+        "subject": "=Orden {{ $('Registrar Orden').item.json.order_number }} Ã”Ã‡Ã¶ Producto sin stock",
+        "html": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <h2 style=\"color: #c62828;\">Aviso sobre tu orden</h2>\n\n  <p>Hola <strong>{{ $('Webhook - Recibir Orden').item.json.body.customer_name }}</strong>,</p>\n\n  <p>Lamentamos informarte que el producto solicitado no tiene stock disponible en este momento.</p>\n\n  <table style=\"width: 100%; border-collapse: collapse; margin: 20px 0;\">\n    <tr style=\"background-color: #f5f5f5;\">\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Nâ”œâ•‘mero de orden</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">{{ $('Registrar Orden').item.json.order_number }}</td>\n    </tr>\n    <tr>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Producto</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">{{ $('Verificar Stock').item.json.product_name }}</td>\n    </tr>\n    <tr style=\"background-color: #f5f5f5;\">\n      <td style=\"padding: 10px; border: 1px solid #ddd;\"><strong>Estado</strong></td>\n      <td style=\"padding: 10px; border: 1px solid #ddd;\">Sin stock</td>\n    </tr>\n  </table>\n\n  <p>Nos pondremos en contacto contigo cuando el producto estâ”œÂ® disponible nuevamente.</p>\n\n  <p style=\"color: #888; font-size: 12px;\">\n    Este es un email automâ”œÃ­tico del sistema de e-commerce Ã”Ã‡Ã¶ Tesis UTN FRM 2026\n  </p>\n</div>",
         "options": {}
       },
       "id": "b88c00d2-6391-40f7-80ab-00379e11016a",
@@ -249,7 +249,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": true,\n  \"order_number\": \"{{ $('Registrar Orden').item.json.order_number }}\",\n  \"status\": \"no_stock\",\n  \"total_amount\": {{ $('Registrar Orden').item.json.total_amount }},\n  \"message\": \"Producto sin stock disponible. Se notific├│ al cliente.\"\n}",
+        "responseBody": "={\n  \"success\": true,\n  \"order_number\": \"{{ $('Registrar Orden').item.json.order_number }}\",\n  \"status\": \"no_stock\",\n  \"total_amount\": {{ $('Registrar Orden').item.json.total_amount }},\n  \"message\": \"Producto sin stock disponible. Se notificâ”œâ”‚ al cliente.\"\n}",
         "options": {}
       },
       "id": "27d5b92a-853c-49b8-9de0-73d77db4a7d6",
@@ -374,25 +374,25 @@
       "main": [
         [
           {
-            "node": "Enviar Email Confirmaci├│n",
+            "node": "Enviar Email Confirmaciâ”œâ”‚n",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Enviar Email Confirmaci├│n": {
+    "Enviar Email Confirmaciâ”œâ”‚n": {
       "main": [
         [
           {
-            "node": "Registrar Notificaci├│n",
+            "node": "Registrar Notificaciâ”œâ”‚n",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Registrar Notificaci├│n": {
+    "Registrar Notificaciâ”œâ”‚n": {
       "main": [
         [
           {
