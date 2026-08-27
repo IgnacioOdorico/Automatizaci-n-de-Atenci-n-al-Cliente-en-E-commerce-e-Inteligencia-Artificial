@@ -131,7 +131,7 @@ services:
   # Acceso: http://localhost:3000 (usuario admin; contrasena via GRAFANA_PASSWORD)
   # ----------------------------------------------------------
   grafana:
-    image: grafana/grafana:13.0.0
+    image: grafana/grafana:13.0.7
     container_name: tesis_grafana
     restart: unless-stopped
     ports:

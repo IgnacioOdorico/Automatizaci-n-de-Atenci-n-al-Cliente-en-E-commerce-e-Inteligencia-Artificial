@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS stock_alerts (
 );
 
 -- ############################################################
---  FLUJO 2 — CHATBOT OMNICANAL CON IA
+--  FLUJO 2 — CHATBOT MULTICANAL CON IA
 -- ############################################################
 
 CREATE TABLE IF NOT EXISTS interactions (
@@ -295,3 +295,23 @@ INSERT INTO faq_responses (question, answer, category) VALUES
         'Facturación'
     )
 ON CONFLICT DO NOTHING;
+
+-- ============================================================
+--  Vista del corpus evaluado del Flujo 2 (150 mensajes con ground truth)
+--  Alimenta 5 de los 13 paneles de Grafana. Ver docs/ Anexo A.
+-- ============================================================
+CREATE OR REPLACE VIEW v_chatbot_corpus AS
+SELECT
+    i.id,
+    i.channel,
+    i.user_id,
+    i.intent,                              -- intent PREDICHO por el modelo
+    i.received_at,
+    i.responded_at,
+    EXTRACT(EPOCH FROM (i.responded_at - i.received_at)) AS tmr_seconds,
+    i.is_urgent
+FROM interactions i
+WHERE i.data_source = 'measured'
+  AND i.responded_at IS NOT NULL
+  AND i.received_at >= '2026-08-12 23:00:00'
+  AND i.received_at <  '2026-08-13 00:00:00';

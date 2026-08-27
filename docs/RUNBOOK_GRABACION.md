@@ -30,7 +30,7 @@ Tus bloques concentran el **45% de la nota** (Metodología + Desarrollo + Result
 
 ### Paso 1 — Mostrar el Flujo 1 en n8n
 🖥️ **Pantalla:** canvas del Flujo 1.
-🗣️ *"Este es el pipeline de órdenes: 11 nodos. Entra el webhook, registra la orden, verifica stock y se abre en dos ramas. Lo disparo en vivo."*
+🗣️ *"Este es el pipeline de órdenes: 15 nodos. Entra el webhook, registra la orden, verifica stock y se abre en dos ramas. Lo disparo en vivo."*
 
 ### Paso 2 — Orden CON stock
 🖥️ **Pantalla:** terminal. Pegá y ejecutá:
