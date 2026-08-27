@@ -1,0 +1,97 @@
+<svg width="1240" height="980" viewBox="0 0 1240 980" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .t    {font:700 22px Arial,Helvetica,sans-serif;fill:#eef0ff;text-anchor:middle}
+  .st   {font:400 12.5px Arial,Helvetica,sans-serif;fill:#8f8fc0;text-anchor:middle}
+  .cap  {font:400 12px Arial,Helvetica,sans-serif;fill:#8f8fc0}
+  .h    {font:700 15px Arial,Helvetica,sans-serif;fill:#ffffff;text-anchor:middle}
+  .l1   {font:700 12.5px Arial,Helvetica,sans-serif;fill:#dfe3ff;text-anchor:middle}
+  .l2   {font:400 11.5px Arial,Helvetica,sans-serif;fill:#c3c8e8;text-anchor:middle}
+  .l3   {font:400 10.5px Arial,Helvetica,sans-serif;fill:#8f8fc0;text-anchor:middle}
+  .edge {font:700 11px Arial,Helvetica,sans-serif;text-anchor:middle}
+  .leg  {font:400 11.5px Arial,Helvetica,sans-serif;fill:#c3c8e8}
+</style>
+<rect width="1240" height="980" fill="#1a1a2e"/>
+<defs>
+  <marker id="am" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto"><path d="M0,0 L7.5,3.2 L0,6.4 z" fill="#9aa0c8"/></marker>
+  <marker id="ao" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto"><path d="M0,0 L7.5,3.2 L0,6.4 z" fill="#d99a4a"/></marker>
+  <marker id="am2" markerWidth="9" markerHeight="9" refX="1.5" refY="3.2" orient="auto"><path d="M7.5,0 L0,3.2 L7.5,6.4 z" fill="#9aa0c8"/></marker>
+</defs>
+
+<text class="t"  x="620" y="44">Figura — Arquitectura del Sistema</text>
+<text class="st" x="620" y="70">4 servicios en contenedor sobre la red tesis_network · 3 volúmenes persistentes · 2 dependencias externas</text>
+
+<!-- ===== dependencias externas ===== -->
+<rect x="180" y="108" width="880" height="140" rx="10" fill="none" stroke="#8a7a4a" stroke-width="1.4" stroke-dasharray="7,5"/>
+<text class="cap" x="196" y="130">Dependencias externas (Internet)</text>
+
+<rect x="225" y="142" width="370" height="90" rx="9" fill="#2c2440" stroke="#d99a4a" stroke-width="1.8"/>
+<text class="l1" x="410" y="172">OpenAI API — GPT-4o-mini</text>
+<text class="l2" x="410" y="192">Clasificación de intents y generación de respuesta</text>
+<text class="l3" x="410" y="211" fill="#d99a4a">dependencia crítica (§5.4.1)</text>
+
+<rect x="645" y="142" width="370" height="90" rx="9" fill="#242c46" stroke="#4a90d9" stroke-width="1.8"/>
+<text class="l1" x="830" y="172">Telegram Bot API</text>
+<text class="l2" x="830" y="192">Canal real del chatbot</text>
+<text class="l3" x="830" y="211">webhook entrante y saliente</text>
+
+<path d="M410 232 L410 340" fill="none" stroke="#d99a4a" stroke-width="1.8" stroke-dasharray="7,5" marker-end="url(#ao)"/>
+<text class="edge" x="443" y="290" fill="#d99a4a">HTTPS</text>
+<path d="M830 232 L830 340" fill="none" stroke="#d99a4a" stroke-width="1.8" stroke-dasharray="7,5" marker-end="url(#ao)"/>
+<text class="edge" x="863" y="290" fill="#d99a4a">HTTPS</text>
+
+<!-- ===== stack en contenedores ===== -->
+<rect x="62" y="348" width="1116" height="500" rx="10" fill="none" stroke="#5a5a80" stroke-width="1.4" stroke-dasharray="7,5"/>
+<text class="cap" x="82" y="372">docker-compose.yml · red tesis_network (bridge)</text>
+
+<rect x="318" y="392" width="584" height="34" rx="8" fill="#4a90d9"/>
+<rect x="318" y="418" width="584" height="126" rx="8" fill="#242c46" stroke="#4a90d9" stroke-width="1.8"/>
+<rect x="318" y="392" width="584" height="34" fill="#4a90d9"/>
+<text class="h"  x="610" y="415">n8n — Orquestador de workflows</text>
+<text class="l2" x="610" y="456">n8nio/n8n:2.12.2 · :5678</text>
+<text class="l2" x="610" y="482">Flujo 1: pipeline de órdenes · Flujo 2: chatbot</text>
+<text class="l3" x="610" y="510">vol: n8n_data</text>
+
+<path d="M610 544 L610 574 L246 574 L246 632" fill="none" stroke="#9aa0c8" stroke-width="1.6" marker-end="url(#am)"/>
+<text class="edge" x="330" y="566" fill="#c3c8e8">SMTP</text>
+<path d="M610 544 L610 632" fill="none" stroke="#9aa0c8" stroke-width="1.6" marker-end="url(#am)"/>
+<text class="edge" x="645" y="596" fill="#c3c8e8">SQL</text>
+
+<rect x="100" y="636" width="292" height="34" rx="8" fill="#c0506a"/>
+<rect x="100" y="662" width="292" height="146" rx="8" fill="#2e2436" stroke="#c0506a" stroke-width="1.8"/>
+<rect x="100" y="636" width="292" height="34" fill="#c0506a"/>
+<text class="h"  x="246" y="659">Mailpit</text>
+<text class="l2" x="246" y="698">axllent/mailpit:v1.29.6</text>
+<text class="l2" x="246" y="722">:8025 web · :1025 SMTP</text>
+<text class="l2" x="246" y="746">Capturador SMTP de pruebas</text>
+<text class="l3" x="246" y="772">no entrega correo real</text>
+
+<rect x="440" y="636" width="292" height="34" rx="8" fill="#3aa06a"/>
+<rect x="440" y="662" width="292" height="146" rx="8" fill="#1f3330" stroke="#3aa06a" stroke-width="1.8"/>
+<rect x="440" y="636" width="292" height="34" fill="#3aa06a"/>
+<text class="h"  x="586" y="659">PostgreSQL 15</text>
+<text class="l2" x="586" y="698">postgres:15.13-alpine · :5432</text>
+<text class="l2" x="586" y="722" fill="#7dd8a8">ecommerce_tesis</text>
+<text class="l2" x="586" y="746">7 tablas · 6 vistas · 12 índices</text>
+<text class="l3" x="586" y="772">vol: pg_data</text>
+
+<rect x="780" y="636" width="292" height="34" rx="8" fill="#c8912f"/>
+<rect x="780" y="662" width="292" height="146" rx="8" fill="#332a1e" stroke="#c8912f" stroke-width="1.8"/>
+<rect x="780" y="636" width="292" height="34" fill="#c8912f"/>
+<text class="h"  x="926" y="659">Grafana</text>
+<text class="l2" x="926" y="698">grafana/grafana:13.0.7 · :3000</text>
+<text class="l2" x="926" y="722">2 dashboards · 13 paneles</text>
+<text class="l2" x="926" y="746">MTTD · MTTR · TMR</text>
+<text class="l3" x="926" y="772">vol: grafana_data</text>
+
+<path d="M736 724 L776 724" fill="none" stroke="#9aa0c8" stroke-width="1.6" marker-end="url(#am)" marker-start="url(#am2)"/>
+<text class="edge" x="756" y="712" fill="#c3c8e8">queries</text>
+
+<!-- ===== leyenda ===== -->
+<rect x="100" y="878" width="1040" height="52" rx="8" fill="#232342"/>
+<rect x="126" y="897" width="14" height="14" rx="3" fill="#4a90d9"/><text class="leg" x="150" y="909">n8n</text>
+<rect x="212" y="897" width="14" height="14" rx="3" fill="#3aa06a"/><text class="leg" x="236" y="909">PostgreSQL</text>
+<rect x="348" y="897" width="14" height="14" rx="3" fill="#c8912f"/><text class="leg" x="372" y="909">Grafana</text>
+<rect x="460" y="897" width="14" height="14" rx="3" fill="#c0506a"/><text class="leg" x="484" y="909">Mailpit</text>
+<path d="M566 904 L616 904" stroke="#9aa0c8" stroke-width="1.8"/><text class="leg" x="628" y="909">Comunicación interna</text>
+<path d="M786 904 L836 904" stroke="#d99a4a" stroke-width="1.8" stroke-dasharray="7,5"/><text class="leg" x="848" y="909">Dependencia externa (HTTPS)</text>
+</svg>

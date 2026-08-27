@@ -1,0 +1,116 @@
+<svg width="1360" height="1230" viewBox="0 0 1360 1230" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .t   {font:700 20px Arial,Helvetica,sans-serif;fill:#eef0ff}
+  .st  {font:400 12.5px Arial,Helvetica,sans-serif;fill:#8f8fc0}
+  .ft  {font:400 11px Arial,Helvetica,sans-serif;fill:#6f6fa0}
+  .n   {font:700 12.5px Arial,Helvetica,sans-serif;fill:#dfe3ff;text-anchor:middle}
+  .ns  {font:400 10px Arial,Helvetica,sans-serif;fill:#8f8fc0;text-anchor:middle}
+  .lbl {font:700 10.5px Arial,Helvetica,sans-serif;text-anchor:middle}
+  .box {fill:#232342;stroke-width:1.6}
+  .ar  {fill:none;stroke-width:1.5}
+</style>
+<rect width="1360" height="1230" fill="#16162a"/>
+<defs>
+  <marker id="a"  markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto"><path d="M0,0 L7.5,3.2 L0,6.4 z" fill="#7f86c8"/></marker>
+  <marker id="ag" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto"><path d="M0,0 L7.5,3.2 L0,6.4 z" fill="#6fc79a"/></marker>
+  <marker id="ab" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto"><path d="M0,0 L7.5,3.2 L0,6.4 z" fill="#6f9ed8"/></marker>
+  <marker id="ap" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto"><path d="M0,0 L7.5,3.2 L0,6.4 z" fill="#d1729e"/></marker>
+  <marker id="ay" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto"><path d="M0,0 L7.5,3.2 L0,6.4 z" fill="#c9b96a"/></marker>
+</defs>
+
+<text class="t"  x="680" y="36" text-anchor="middle">Figura — Diagrama Flujo 2: Chatbot Multicanal con IA</text>
+<text class="st" x="680" y="58" text-anchor="middle">Sección 4.4.2 · 18 nodos · n8n + GPT-4o-mini + PostgreSQL</text>
+
+<rect class="box" x="150" y="90" width="215" height="50" rx="7" stroke="#6fc79a"/>
+<text class="n"  x="257.5" y="111">Trigger WhatsApp Business</text>
+<text class="ns" x="257.5" y="127">webhook /whatsapp-business</text>
+
+<rect class="box" x="465" y="90" width="215" height="50" rx="7" stroke="#6fc79a"/>
+<text class="n"  x="572.5" y="111">Trigger Telegram</text>
+<text class="ns" x="572.5" y="127">telegramTrigger</text>
+
+<rect class="box" x="780" y="90" width="215" height="50" rx="7" stroke="#5a5a80" stroke-dasharray="5,4"/>
+<text class="n"  x="887.5" y="111" fill="#9a9ac0">Trigger Gmail</text>
+<text class="ns" x="887.5" y="127">desactivado · sin conexión</text>
+
+<rect class="box" x="465" y="188" width="215" height="40" rx="7" stroke="#7f86c8"/>
+<text class="n" x="572.5" y="213">Normalizar Mensaje</text>
+<rect class="box" x="465" y="264" width="215" height="40" rx="7" stroke="#7f86c8"/>
+<text class="n" x="572.5" y="289">Buscar FAQ en PostgreSQL</text>
+<rect class="box" x="465" y="340" width="215" height="40" rx="7" stroke="#7f86c8"/>
+<text class="n" x="572.5" y="365">Preparar Contexto FAQ</text>
+
+<rect class="box" x="450" y="416" width="245" height="50" rx="7" stroke="#a78bda"/>
+<text class="n"  x="572.5" y="437">IA — Motor Decision</text>
+<text class="ns" x="572.5" y="453">clasifica intención y redacta</text>
+
+<rect class="box" x="810" y="416" width="200" height="50" rx="7" stroke="#a78bda" stroke-dasharray="4,3"/>
+<text class="n"  x="910" y="437">OpenAI Chat Model</text>
+<text class="ns" x="910" y="453">gpt-4o-mini · zero-shot</text>
+
+<rect class="box" x="465" y="502" width="215" height="40" rx="7" stroke="#7f86c8"/>
+<text class="n" x="572.5" y="527">Parse JSON</text>
+
+<path d="M572.5 578 L748 622 L572.5 666 L397 622 Z" fill="#232342" stroke="#d8c87a" stroke-width="1.6"/>
+<text class="n"  x="572.5" y="618">Switch Intent</text>
+<text class="ns" x="572.5" y="634">4 salidas</text>
+
+<rect class="box" x="205" y="742" width="210" height="40" rx="7" stroke="#6f9ed8"/>
+<text class="n" x="310" y="767">Buscar Pedido en BD</text>
+<rect class="box" x="205" y="816" width="210" height="40" rx="7" stroke="#6f9ed8"/>
+<text class="n" x="310" y="841">Preparar Respuesta Pedido</text>
+
+<rect class="box" x="730" y="742" width="210" height="40" rx="7" stroke="#d1729e"/>
+<text class="n" x="835" y="767">Crear Ticket en BD</text>
+<rect class="box" x="730" y="816" width="210" height="40" rx="7" stroke="#d1729e"/>
+<text class="n" x="835" y="841">Preparar Respuesta Ticket</text>
+
+<path d="M572.5 896 L742 936 L572.5 976 L403 936 Z" fill="#232342" stroke="#d8c87a" stroke-width="1.6"/>
+<text class="n"  x="572.5" y="932">Router Canal</text>
+<text class="ns" x="572.5" y="948">según canal de origen</text>
+
+<rect class="box" x="250" y="1034" width="210" height="50" rx="7" stroke="#6fc79a"/>
+<text class="n"  x="355" y="1055">Enviar Telegram</text>
+<text class="ns" x="355" y="1071">Telegram Bot API · real</text>
+
+<rect class="box" x="690" y="1034" width="230" height="50" rx="7" stroke="#6fc79a"/>
+<text class="n"  x="805" y="1055">Enviar Respuesta</text>
+<text class="ns" x="805" y="1071">SMTP · canal simulado</text>
+
+<rect class="box" x="465" y="1128" width="215" height="40" rx="7" stroke="#7f86c8"/>
+<text class="n" x="572.5" y="1153">Registrar Interacción</text>
+
+<path class="ar" d="M257.5 140 L257.5 164 L572.5 164 L572.5 184" stroke="#6fc79a" marker-end="url(#ag)"/>
+<path class="ar" d="M572.5 140 L572.5 184" stroke="#6fc79a" marker-end="url(#ag)"/>
+<path class="ar" d="M572.5 228 L572.5 260" stroke="#7f86c8" marker-end="url(#a)"/>
+<path class="ar" d="M572.5 304 L572.5 336" stroke="#7f86c8" marker-end="url(#a)"/>
+<path class="ar" d="M572.5 380 L572.5 412" stroke="#7f86c8" marker-end="url(#a)"/>
+<path class="ar" d="M810 441 L699 441" stroke="#a78bda" marker-end="url(#a)" stroke-dasharray="4,3"/>
+<path class="ar" d="M572.5 466 L572.5 498" stroke="#7f86c8" marker-end="url(#a)"/>
+<path class="ar" d="M572.5 542 L572.5 574" stroke="#7f86c8" marker-end="url(#a)"/>
+
+<path class="ar" d="M397 622 L310 622 L310 738" stroke="#6f9ed8" marker-end="url(#ab)"/>
+<text class="lbl" x="333" y="613" fill="#6f9ed8">ESTADO_PEDIDO</text>
+<path class="ar" d="M748 622 L835 622 L835 738" stroke="#d1729e" marker-end="url(#ap)"/>
+<text class="lbl" x="817" y="613" fill="#d1729e">RECLAMO</text>
+<path class="ar" d="M310 782 L310 812" stroke="#6f9ed8" marker-end="url(#ab)"/>
+<path class="ar" d="M835 782 L835 812" stroke="#d1729e" marker-end="url(#ap)"/>
+
+<path class="ar" d="M497 660 C 90 690, 40 900, 396 932" stroke="#6fc79a" stroke-dasharray="6,4" marker-end="url(#ag)"/>
+<text class="lbl" x="118" y="795" fill="#6fc79a">FAQ</text>
+<path class="ar" d="M648 660 C 1055 690, 1105 900, 749 932" stroke="#6fc79a" stroke-dasharray="6,4" marker-end="url(#ag)"/>
+<text class="lbl" x="1032" y="795" fill="#6fc79a">GENERAL</text>
+
+<path class="ar" d="M310 856 L310 908 L470 936" stroke="#6f9ed8" marker-end="url(#ab)"/>
+<path class="ar" d="M835 856 L835 908 L675 936" stroke="#d1729e" marker-end="url(#ap)"/>
+
+<path class="ar" d="M403 936 L355 936 L355 1030" stroke="#c9b96a" marker-end="url(#ay)"/>
+<text class="lbl" x="326" y="978" fill="#c9b96a">telegram</text>
+<path class="ar" d="M742 936 L805 936 L805 1030" stroke="#c9b96a" marker-end="url(#ay)"/>
+<text class="lbl" x="855" y="978" fill="#c9b96a">whatsapp</text>
+
+<path class="ar" d="M355 1084 L355 1148 L461 1148" stroke="#7f86c8" marker-end="url(#a)"/>
+<path class="ar" d="M805 1084 L805 1148 L684 1148" stroke="#7f86c8" marker-end="url(#a)"/>
+
+<text class="ft" x="680" y="1200" text-anchor="middle">Fuente: elaboración propia sobre el workflow versionado · n8n · GPT-4o-mini · ecommerce_tesis</text>
+</svg>
