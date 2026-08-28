@@ -44,8 +44,16 @@ chk(5, 'MAY', '§2.5 Estado del arte con procedimiento y tabla comparativa',
     and hay(r'Tabla 2\.1') and hay(r'Parikh') and hay(r'Ngai'))
 chk(6, 'MAY', 'IC de Wilson corregido a [87,3; 95,9] en TODAS sus ocurrencias',
     n(r'87,3 ?%') >= 3 and not hay(r'88,2') and not hay(r'96,3 ?%'))
-chk(7, 'MAY', '§5.4.1(d) reescrita: ya no niega el análisis realizado',
-    hay(r'Ausencia de contraste inferencial') and not hay(r'No se calcularon intervalos de confianza'))
+# El rotulo del apartado cambio en la 4ta ronda ('Ausencia de contraste inferencial'
+# -> 'Ausencia de grupo de control...') porque negaba el contraste que la §5.3 ejecuta.
+# El control se ancla ahora en la INTENCION y no en el titulo, y ademas exige que (d)
+# reconozca explicitamente el analisis realizado.
+chk(7, 'MAY', '§5.4.1(d) no niega el análisis realizado y reconoce el contraste',
+    hay(r'\(d\) Ausencia de grupo de control')
+    and not hay(r'No se calcularon intervalos de confianza')
+    and not hay(r'no ejecuta un contraste formal')
+    and hay(r'el contraste de H1 se ejecutó')
+    and hay(r'único operador'))
 chk(8, 'MAY', 'Precisiones del texto alineadas con la Tabla 5.9',
     hay(r'FAQ \(97,8 ?%\)') and not hay(r'FAQ \(96,3 ?%\)'))
 chk(9, 'MAY', 'Omnicanalidad reencuadrada como multicanal',
