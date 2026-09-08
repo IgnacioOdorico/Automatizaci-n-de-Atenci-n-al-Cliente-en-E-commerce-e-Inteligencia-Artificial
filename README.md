@@ -143,8 +143,8 @@ docker compose version
 ### Paso 1 — Clonar el repositorio
 
 ```powershell
-git clone https://github.com/IgnacioOdorico/Automatizaci-n-de-Atenci-n-al-Cliente-en-E-commerce-e-Inteligencia-Artificial.git
-cd Automatizaci-n-de-Atenci-n-al-Cliente-en-E-commerce-e-Inteligencia-Artificial
+git clone https://github.com/IgnacioOdorico/Automatizacion-de-Atencion-al-Cliente-en-E-commerce-e-Inteligencia-Artificial.git
+cd Automatizacion-de-Atencion-al-Cliente-en-E-commerce-e-Inteligencia-Artificial
 ```
 
 ---
