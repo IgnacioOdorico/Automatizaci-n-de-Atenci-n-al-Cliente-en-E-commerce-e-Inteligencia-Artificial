@@ -38,3 +38,11 @@ __pycache__/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ---- credenciales: NUNCA versionar (repositorio publico) ----
+# Inventario de credenciales del proyecto y volcado de credentials_entity
+# de n8n. El segundo trae los blobs cifrados; el primero, la clave con la
+# que se descifran. Juntos exponen la API key de OpenAI.
+env.example.env
+.env.example.pre-merge
+restore_credentials.sql
